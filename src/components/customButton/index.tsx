@@ -1,10 +1,10 @@
-import React, { ReactElement } from 'react'
-import './style.scss'
+import { ReactElement } from 'react';
+import './style.scss';
 
 interface Props {
-    text: string
-    icon: any
-    onClick?: () => void
+    text: string;
+    icon: any;
+    onClick?: () => void;
 }
 
 function Button({ text, icon, onClick }: Props): ReactElement {
@@ -12,8 +12,8 @@ function Button({ text, icon, onClick }: Props): ReactElement {
         <>
             {!!text && (
                 <button
-                    type="button"
-                    className="rounded-pill btn-rounded"
+                    type='button'
+                    className='rounded-pill btn-rounded'
                     onClick={onClick}
                 >
                     {text}
@@ -21,7 +21,7 @@ function Button({ text, icon, onClick }: Props): ReactElement {
                 </button>
             )}
         </>
-    )
+    );
 }
 
-export default Button
+export default Button;
