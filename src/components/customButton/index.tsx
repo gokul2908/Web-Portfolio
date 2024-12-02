@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import './style.scss';
+import './style.css';
 
 interface Props {
     text: string;

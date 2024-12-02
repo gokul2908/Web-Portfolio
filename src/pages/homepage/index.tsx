@@ -5,7 +5,8 @@ import Nav from '../../components/navigation';
 import Projects from '../../components/projects';
 import user from '../../user_details';
 
-import './homepage.scss';
+import "../../css/style.css";
+import './homepage.css';
 
 function Homepage(): ReactElement {
     const { name } = useParams() as { name: string };

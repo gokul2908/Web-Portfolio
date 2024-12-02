@@ -1,9 +1,9 @@
 import React, { ReactElement, useEffect, useRef } from 'react';
 import Button from '../customButton';
-import './style.scss';
+import './style.css';
 
 import GLightbox from 'glightbox';
-import '../../../node_modules/glightbox/dist/css/glightbox.min.css';
+import 'glightbox/dist/css/glightbox.min.css';
 import { motion } from 'framer-motion';
 
 interface Props {

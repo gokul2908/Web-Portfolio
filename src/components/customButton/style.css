@@ -1,17 +1,14 @@
-@use '../custom' as *;
-@use './mixins' as *;
-
 .btn-rounded {
     position: relative;
     padding: 0.9375rem 3.5rem 1rem 1rem;
     font-weight: 800;
     margin: 0;
-    border: 0.1rem solid rgba($white, 0.6);
-    background-color: $white;
+    border: 0.1rem solid rgba(var(--white), 0.6);
+    background-color: var(--white);
 
     span {
         position: absolute;
-        background-color: $primary;
+        background-color: var(--primary);
         width: 2.5rem;
         height: 2.5rem;
         top: 50%;
@@ -20,19 +17,24 @@
         border-radius: 50%;
 
         i {
-            color: $white;
+            color: var(--white);
             font-size: 1rem;
             line-height: 2.5rem;
         }
     }
+
     &:hover {
-        @include gradient;
-        color: $white;
+
+        background: linear-gradient(to right,
+                rgba(var(--primary), 0.95),
+                rgba(var(--secondary), 0.95));
+        color: var(--white);
 
         span {
-            background-color: rgba($black, 0.6);
+            background-color: rgba(var(--black), 0.6);
         }
     }
+
     @media (max-width: 575.98px) {
         display: none;
     }
