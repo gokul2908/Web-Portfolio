@@ -13,9 +13,9 @@ interface Props {
 }
 
 function Intro({ introText, email, video }: Props): ReactElement {
-    const playVideoBtn = useRef(null);
+    const playVideoBtn = useRef<HTMLAnchorElement | null>(null);
     useEffect(() => {
-        const mygallery: unknown = GLightbox({
+        const mygallery: any = GLightbox({
             elements: [
                 {
                     href: video,

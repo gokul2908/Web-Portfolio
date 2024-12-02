@@ -1,23 +1,23 @@
-import axios from 'axios'
-import React, { ReactElement, useEffect, useRef, useState } from 'react'
-import { Repos } from '../../pages/homepage/userModel'
-import './style.scss'
-import Card from '@mui/material/Card'
-import CardActions from '@mui/material/CardActions'
-import CardContent from '@mui/material/CardContent'
-import CardMedia from '@mui/material/CardMedia'
-import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
-import { Container, Grid } from '@mui/material'
-import { motion, useInView, Variants } from 'framer-motion'
-import { VideoBGEffectModal } from '../videobgeffectmodal'
+import axios from 'axios';
+import React, { ReactElement, useEffect, useRef, useState } from 'react';
+import { Repos } from '../../pages/homepage/userModel';
+import './style.scss';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import { Container, Grid } from '@mui/material';
+import { motion, useInView, Variants } from 'framer-motion';
+import { VideoBGEffectModal } from '../videobgeffectmodal';
 
 interface Props {
-    name?: string
-    projects?: any[]
-    filteredProjects?: string[]
-    projectInfo: [{}]
-    openSourceProjectsInfo: { [type: string]: any }
+    name?: string;
+    projects?: any[];
+    filteredProjects?: string[];
+    projectInfo: [{}];
+    openSourceProjectsInfo: { [type: string]: any };
 }
 
 export default function Projects({
@@ -27,40 +27,40 @@ export default function Projects({
     projectInfo,
     openSourceProjectsInfo,
 }: Props): ReactElement {
-    const [gitRepos, setGitRepos] = useState<Repos[]>()
-    console.log('projectInfo:', projectInfo)
+    const [gitRepos, setGitRepos] = useState<Repos[]>();
+    console.log('projectInfo:', projectInfo);
 
     useEffect(() => {
         const getGithubRepo = async () => {
             try {
-                if (!profileName) return
+                if (!profileName) return;
 
                 const { data } = await axios.get(
                     `https://api.github.com/users/${profileName}/repos`
-                )
+                );
                 setGitRepos(() =>
                     (data as Repos[]).filter(
                         ({ name }) => !filteredProjects?.includes(name)
                     )
-                )
+                );
             } catch (error: any) {
-                alert(error?.message)
+                alert(error?.message);
             }
-        }
+        };
 
-        getGithubRepo()
-    }, [profileName, filteredProjects, projects])
+        getGithubRepo();
+    }, [profileName, filteredProjects, projects]);
 
     return (
-        <Container maxWidth="lg">
+        <Container maxWidth='lg'>
             <Grid
                 container
                 spacing={2}
                 columns={12}
-                justifyContent="space-evenly"
+                justifyContent='space-evenly'
                 style={{ overflow: 'hidden' }}
             >
-                {projects.map(({ id, name, popupComponent }, idx) => (
+                {projects?.map(({ id, name, popupComponent }, idx) => (
                     <RenderpopupComponent
                         key={idx}
                         {...{
@@ -74,7 +74,7 @@ export default function Projects({
                 ))}
 
                 {projectInfo.map((info: any, idx) => (
-                    <Project {...info} key={idx + projects.length} />
+                    <Project {...info} key={idx + (projects?.length || 0)} />
                 ))}
 
                 {(gitRepos as Repos[])?.map(
@@ -93,7 +93,7 @@ export default function Projects({
                 )}
             </Grid>
         </Container>
-    )
+    );
 }
 const cardVariants: Variants = {
     offscreen: (custom: number) => ({
@@ -118,68 +118,68 @@ const cardVariants: Variants = {
             duration: 0.8,
         },
     },
-}
+};
 
 type ProjectProps = {
-    name: string
-    description: string | null
-    html_url: string | null
-    idx: number
-    key: any
-}
+    name: string;
+    description: string | null;
+    html_url: string | null;
+    idx: number;
+    key: any;
+};
 
 function Project({
     name,
     description,
     html_url,
     idx: custom,
-}: ProjectProps): ReactElement {
-    const cardRef = useRef(null)
+}: ProjectProps): ReactElement | null {
+    const cardRef = useRef(null);
     const inView = useInView(cardRef, {
         amount: 0.1,
         once: true,
-    })
-    if (!name && !description) return null
+    });
+    if (!name && !description) return null;
 
     return (
         <motion.div
-            className="card-container"
+            className='card-container'
             ref={cardRef}
             custom={custom}
             variants={cardVariants}
-            initial="offscreen"
+            initial='offscreen'
             animate={inView ? 'onscreen' : 'offscreen'}
             key={custom}
         >
             <motion.div
-                className="card"
+                className='card'
                 variants={cardVariants}
                 style={{ border: 'none' }}
             >
                 <Grid item xs={12} sm={6} key={custom}>
-                    <Card sx={{ minWidth: 345 }} className=" my-3">
+                    <Card sx={{ minWidth: 345 }} className=' my-3'>
                         <CardMedia
                             sx={{ height: 140 }}
-                            image="https://www.uib.no/sites/w3.uib.no/files/styles/content_main/public/media/colourbox3117235_no5859_edit.jpg?itok=kPbJVL51"
-                            title="green iguana"
+                            image='https://www.uib.no/sites/w3.uib.no/files/styles/content_main/public/media/colourbox3117235_no5859_edit.jpg?itok=kPbJVL51'
+                            title='green iguana'
                         />
                         <CardContent>
                             <Typography
                                 gutterBottom
-                                variant="h5"
-                                component="div"
+                                variant='h5'
+                                component='div'
                             >
                                 {name}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant='body2' color='text.secondary'>
                                 {description || ''}
                             </Typography>
                         </CardContent>
                         <CardActions>
-                            <Button size="small">Share</Button>
+                            <Button size='small'>Share</Button>
                             {!!html_url && (
                                 <Button
-                                    size="small"
+                                    size='small'
                                     onClick={() =>
                                         window.open(
                                             html_url + '/' + name,
@@ -195,12 +195,12 @@ function Project({
                 </Grid>
             </motion.div>
         </motion.div>
-    )
+    );
 }
 
 type ProjectWithPopup = {
-    popupComponent: string
-} & ProjectProps
+    popupComponent: string;
+} & ProjectProps;
 
 function RenderpopupComponent({
     name,
@@ -208,57 +208,57 @@ function RenderpopupComponent({
     html_url,
     idx: custom,
     popupComponent,
-}: ProjectWithPopup): ReactElement {
-    const cardRef = useRef(null)
+}: ProjectWithPopup): ReactElement | null {
+    const cardRef = useRef(null);
 
     const inView = useInView(cardRef, {
         amount: 0.1,
         once: true,
-    })
+    });
 
-    const [showPopup, setShowPopup] = useState(false)
+    const [showPopup, setShowPopup] = useState(false);
 
-    if (!name && !description) return null
+    if (!name && !description) return null;
     return (
         <>
             <motion.div
-                className="card-container"
+                className='card-container'
                 ref={cardRef}
                 custom={custom}
                 variants={cardVariants}
-                initial="offscreen"
+                initial='offscreen'
                 animate={inView ? 'onscreen' : 'offscreen'}
             >
                 <motion.div
-                    className="card"
+                    className='card'
                     variants={cardVariants}
                     style={{ border: 'none' }}
                 >
                     <Grid item xs={12} sm={6} key={custom}>
-                        <Card sx={{ minWidth: 345 }} className=" my-3">
+                        <Card sx={{ minWidth: 345 }} className=' my-3'>
                             <CardMedia
                                 sx={{ height: 140 }}
-                                image="https://www.uib.no/sites/w3.uib.no/files/styles/content_main/public/media/colourbox3117235_no5859_edit.jpg?itok=kPbJVL51"
-                                title="green iguana"
+                                image='https://www.uib.no/sites/w3.uib.no/files/styles/content_main/public/media/colourbox3117235_no5859_edit.jpg?itok=kPbJVL51'
+                                title='green iguana'
                             />
                             <CardContent>
                                 <Typography
                                     gutterBottom
-                                    variant="h5"
-                                    component="div"
+                                    variant='h5'
+                                    component='div'
                                 >
                                     {name}
                                 </Typography>
                                 <Typography
-                                    variant="body2"
-                                    color="text.secondary"
+                                    variant='body2'
+                                    color='text.secondary'
                                 >
                                     {description || ''}
                                 </Typography>
                             </CardContent>
                             <CardActions>
                                 <Button
-                                    size="small"
+                                    size='small'
                                     onClick={() => setShowPopup(true)}
                                 >
                                     Open
@@ -274,5 +274,5 @@ function RenderpopupComponent({
                 />
             )}
         </>
-    )
+    );
 }
