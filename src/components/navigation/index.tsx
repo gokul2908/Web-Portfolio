@@ -47,12 +47,17 @@ function ResponsiveAppBar({ logo, navigation, contactNo }: Props) {
                         sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
                     /> */}
                     <a href='.'>
-                        <img
-                            src={logo}
-                            alt='Logo'
-                            width={60}
-                            className='logo-icon'
-                        />
+                        <Box
+                            component='section'
+                            sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
+                        >
+                            <img
+                                src={logo}
+                                alt='Logo'
+                                width={60}
+                                className='logo-icon'
+                            />
+                        </Box>
                     </a>
 
                     <Box
@@ -99,27 +104,23 @@ function ResponsiveAppBar({ logo, navigation, contactNo }: Props) {
                             ))}
                         </Menu>
                     </Box>
-                    <AdbIcon
-                        sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}
-                    />
-                    <Typography
-                        variant='h5'
-                        noWrap
-                        component='a'
-                        href='#app-bar-with-responsive-menu'
+                    <Box
+                        component='section'
                         sx={{
-                            mr: 2,
                             display: { xs: 'flex', md: 'none' },
+                            mr: 1,
                             flexGrow: 1,
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
                         }}
                     >
-                        LOGO
-                    </Typography>
+                        <a href='.'>
+                            <img
+                                src={logo}
+                                alt='Logo'
+                                width={60}
+                                className='logo-icon'
+                            />
+                        </a>
+                    </Box>
                     <Box
                         sx={{
                             flexGrow: 1,
