@@ -3,8 +3,9 @@
     padding: 0.9375rem 3.5rem 1rem 1rem;
     font-weight: 800;
     margin: 0;
-    border: 0.1rem solid rgba(var(--white), 0.6);
+    border: 0.1rem solid var(--white);
     background-color: var(--white);
+    border-radius: 50rem;
 
     span {
         position: absolute;
@@ -26,12 +27,12 @@
     &:hover {
 
         background: linear-gradient(to right,
-                rgba(var(--primary), 0.95),
-                rgba(var(--secondary), 0.95));
+                var(--primary),
+                var(--secondary));
         color: var(--white);
 
         span {
-            background-color: rgba(var(--black), 0.6);
+            background-color: var(--black);
         }
     }
 

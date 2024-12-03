@@ -5,7 +5,9 @@ import './style.css';
 import GLightbox from 'glightbox';
 import 'glightbox/dist/css/glightbox.min.css';
 import { motion } from 'framer-motion';
-
+import { Container } from '@mui/material';
+import Grid from '@mui/material/Grid2';
+import PlayCircleFilledRoundedIcon from '@mui/icons-material/PlayCircleFilledRounded';
 interface Props {
     introText: string[];
     video: string;
@@ -31,18 +33,22 @@ function Intro({ introText, email, video }: Props): ReactElement {
     }, [video]);
 
     return (
-        <section id='Home' className='intro-section each-section'>
-            <div className='container'>
-                <div className='row'>
-                    <div className='col-md-6 intro'>
-                        <h1 className='display-2'>
-                            <span className='display-2--intro' id='intro-title'>
-                                Hey!, {introText[0]}
-                            </span>
-                            <span className='display-2--description lh-base'>
+        <section id='Home' className='intro-section'>
+            <Container>
+                <Grid container spacing={3}>
+                    <Grid size={{ sm: 12, md: 6 }} className='intro'>
+                        <Grid container>
+                            <Grid id='intro-title' size={12} sx={{ pt: 4 }}>
+                                <h1>Hey!, {introText[0]}</h1>
+                            </Grid>
+                            <Grid
+                                size={12}
+                                sx={{ pt: 4, pb: 4 }}
+                                className='display-2--description lh-base'
+                            >
                                 {introText[1]}
-                            </span>
-                        </h1>
+                            </Grid>
+                        </Grid>
 
                         <motion.div
                             className='box'
@@ -63,8 +69,11 @@ function Intro({ introText, email, video }: Props): ReactElement {
                                 }
                             />
                         </motion.div>
-                    </div>
-                    <div className='col-md-6 intro text-end'>
+                    </Grid>
+                    <Grid
+                        size={{ sm: 12, md: 6 }}
+                        className='intro text-end w-sm-100'
+                    >
                         <div className='video-box'>
                             <img
                                 src='images/intro section.svg'
@@ -73,21 +82,28 @@ function Intro({ introText, email, video }: Props): ReactElement {
                             />
                             <a
                                 href='#navbarSupportedContent'
-                                className='glightbox position-absolute top-50 start-50 translate-middle'
+                                className='glightbox center-tovideo-box'
                                 id='hover-animation'
                                 ref={playVideoBtn}
                             >
-                                <span>
-                                    <i className='fas fa-play-circle'></i>
-                                </span>
-                                <span className='border-animation border-animation--border-1'></span>
-                                <span className='border-animation border-animation--border-2'></span>
+                                <PlayCircleFilledRoundedIcon
+                                    sx={{
+                                        fontSize: '6rem',
+                                        color: '#012255',
+                                    }}
+                                />
+                                <span className='border-animation border-animation-1'></span>
+                                <span className='border-animation border-animation-2'></span>
                             </a>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <svg viewBox='0 0 1440 320'>
+                    </Grid>
+                </Grid>
+            </Container>
+
+            <svg
+                viewBox='0 0 1440 320'
+                style={{ position: 'relative', top: '5px' }}
+            >
                 <path
                     fill='#ffffff'
                     fillOpacity='1'

@@ -73,14 +73,6 @@ body {
     transform: rotateY(180deg);
 }
 
-
-/* @use '/src//scss/sections/projects'; */
-#intro-title>h1 {
-    border-color: black;
-    border-bottom-style: solid;
-    border-bottom-width: medium;
-}
-
 .project {
     margin: 2vw;
     border-radius: 80px;

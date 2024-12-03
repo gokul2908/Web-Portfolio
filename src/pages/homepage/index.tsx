@@ -1,12 +1,12 @@
 import React, { ReactElement } from 'react';
 import { useParams } from 'react-router-dom';
 import Intro from '../../components/intro';
-import Nav from '../../components/navigation';
 import Projects from '../../components/projects';
 import user from '../../user_details';
+import ResponsiveAppBar from '../../components/navigation';
 
-import "../../css/style.css";
 import './homepage.css';
+import { Container } from '@mui/material';
 
 function Homepage(): ReactElement {
     const { name } = useParams() as { name: string };
@@ -16,14 +16,22 @@ function Homepage(): ReactElement {
 
     return (
         <>
-            <Nav {...userDetails} />
-            <div className='y-mandatory'>
-                <div className='wrapper'>
-                    {[Intro, Projects].map((Component, i) => (
-                        <Component {...userDetails} key={i} />
-                    ))}
+            <ResponsiveAppBar {...userDetails} />
+            <Container
+                maxWidth='xl'
+                sx={{
+                    width: '100%',
+                    padding: '0px !important',
+                }}
+            >
+                <div className='y-mandatory'>
+                    <div className='wrapper'>
+                        {[Intro, Projects].map((Component, i) => (
+                            <Component {...userDetails} key={i} />
+                        ))}
+                    </div>
                 </div>
-            </div>
+            </Container>
         </>
     );
 }

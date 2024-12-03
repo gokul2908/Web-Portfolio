@@ -8,7 +8,8 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { Container, Grid } from '@mui/material';
+import { Container } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import { motion, useInView, Variants } from 'framer-motion';
 import { VideoBGEffectModal } from '../videobgeffectmodal';
 
@@ -156,7 +157,7 @@ function Project({
                 variants={cardVariants}
                 style={{ border: 'none' }}
             >
-                <Grid item xs={12} sm={6} key={custom}>
+                <Grid key={custom}>
                     <Card sx={{ minWidth: 345 }} className=' my-3'>
                         <CardMedia
                             sx={{ height: 140 }}
@@ -234,7 +235,7 @@ function RenderpopupComponent({
                     variants={cardVariants}
                     style={{ border: 'none' }}
                 >
-                    <Grid item xs={12} sm={6} key={custom}>
+                    <Grid key={custom}>
                         <Card sx={{ minWidth: 345 }} className=' my-3'>
                             <CardMedia
                                 sx={{ height: 140 }}

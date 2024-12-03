@@ -14,11 +14,11 @@
     --gray-900: #212529;
     --black: #000;
 
-    --primary: --purple-dark;
-    --secondary: --pink;
+    --primary: var(--purple-dark);
+    --secondary: var(--pink);
 
-    --accordion-icon-color: --primary;
-    --accordion-icon-active-color: --secondary;
+    --accordion-icon-color: var(--primary);
+    --accordion-icon-active-color: var(--secondary);
     --accordion-icon-width: 1.875rem;
 
     --accordion-button-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{--accordion-icon-color}'><path d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z'/></svg>");
@@ -64,4 +64,42 @@
     to {
         transform: rotate(360deg);
     }
+}
+
+
+.display-2 {
+    margin-bottom: 1rem;
+    text-transform: capitalize;
+    font-family: 'Poppins', sans-serif;
+
+    &--intro {
+        display: inline-block;
+        font-weight: 700;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    &--description {
+        font-size: 1.5rem;
+        display: block;
+        margin-top: 1.2rem;
+    }
+}
+
+@keyframes pulse-border {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+.absoluteCenter {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }

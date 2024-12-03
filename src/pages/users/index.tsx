@@ -7,10 +7,10 @@ function Users(): ReactElement {
     // const userList = user.map(e=> e.name)
     return (
         <div className='vh-100 d-flex justify-content-center align-items-center'>
-            {user.map((each) => {
+            {user.map((each, i) => {
                 const hrefVal = `./${each.name}`;
                 return (
-                    <a href={hrefVal}>
+                    <a href={hrefVal} key={i}>
                         <Button variant='outlined' className='m-3'>
                             {each.name}
                         </Button>
