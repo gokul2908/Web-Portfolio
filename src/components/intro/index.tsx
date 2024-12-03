@@ -41,7 +41,19 @@ function Intro({ introText, email, video }: Props): ReactElement {
                     <Grid size={{ sm: 12, md: 6 }} className='intro'>
                         <Grid container>
                             <Grid id='intro-title' size={12} sx={{ pt: 4 }}>
-                                <h1>Hey!, {introText[0]}</h1>
+                                <Typography
+                                    variant='h1'
+                                    sx={{
+                                        mr: 2,
+                                        fontFamily: 'monospace',
+                                        fontWeight: 700,
+                                        color: 'white',
+                                        textDecoration: 'none',
+                                    }}
+                                >
+                                    Hey!, <br />
+                                    {introText[0]}
+                                </Typography>
                             </Grid>
                             <Grid
                                 size={12}

@@ -21,3 +21,7 @@
             var(--primary),
             var(--secondary)) !important;
 }
+
+.logo-icon {
+    vertical-align: middle;
+}

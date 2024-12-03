@@ -47,12 +47,7 @@ function ResponsiveAppBar({ logo, navigation, contactNo }: Props) {
                         sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
                     /> */}
                     <a href='.'>
-                        <img
-                            // srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                            src={logo}
-                            alt='Logo'
-                            width={60}
-                        />
+                        <img src={logo} alt='Logo' width={60} className='logo-icon'/>
                     </a>
 
                     <Box
