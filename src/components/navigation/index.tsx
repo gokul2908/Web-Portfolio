@@ -47,7 +47,12 @@ function ResponsiveAppBar({ logo, navigation, contactNo }: Props) {
                         sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
                     /> */}
                     <a href='.'>
-                        <img src={logo} alt='Logo' width={60} className='logo-icon'/>
+                        <img
+                            src={logo}
+                            alt='Logo'
+                            width={60}
+                            className='logo-icon'
+                        />
                     </a>
 
                     <Box
@@ -220,12 +225,12 @@ function Nav({ logo, navigation, contactNo }: Props): any {
                 <ul className='navbar-nav mb-2 mb-lg-0'>
                     <NavSideOptions options={navigation} />
                 </ul>
-                {!!contactNo && (
+                {/* {!!contactNo && (
                     <Button
                         text={'+91' + contactNo}
                         icon={<i className='fas fa-phone' />}
                     />
-                )}
+                )} */}
             </div>
         </nav>
     );

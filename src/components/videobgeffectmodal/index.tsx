@@ -1,7 +1,7 @@
-import { Backdrop, Box, Fade, Modal, Typography } from '@mui/material'
-import helper from 'csvtojson'
-import { ReactElement, useEffect, useRef } from 'react'
-import { addBackgroundEffect } from './videoBGEffect'
+import { Backdrop, Box, Fade, Modal, Typography } from '@mui/material';
+import helper from 'csvtojson';
+import { ReactElement, useEffect, useRef } from 'react';
+import { addBackgroundEffect } from './videoBGEffect';
 
 const style = {
     position: 'absolute',
@@ -13,39 +13,40 @@ const style = {
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
-}
+};
 
 export function VideoBGEffectModal({ open, setOpen }): ReactElement {
-    const canvasEl = useRef(null)
-    const videoEl = useRef(null)
+    const canvasEl = useRef<HTMLCanvasElement | null>(null);
+    const videoEl = useRef<HTMLVideoElement | null>(null);
 
-    const bgRef = useRef(null)
+    const bgRef = useRef<any | null>(null);
 
     const handleClose = () => {
-        setOpen(false)
+        setOpen(false);
         if (bgRef.current) {
-            bgRef.current.resetVideoElements()
+            bgRef.current.resetVideoElements();
         }
-    }
+    };
 
     useEffect(() => {
         if (open) {
+            if (!videoEl.current || !canvasEl.current) return;
             const bgInstance = addBackgroundEffect(
                 videoEl.current,
                 canvasEl.current
-            )
-            bgRef.current = bgInstance
-            bgInstance.showCropVideo()
+            );
+            bgRef.current = bgInstance;
+            bgInstance.showCropVideo();
         }
-    }, [open])
+    }, [open]);
 
     return (
         <Modal
             keepMounted
             open={open}
             onClose={handleClose}
-            aria-labelledby="keep-mounted-modal-title"
-            aria-describedby="keep-mounted-modal-description"
+            aria-labelledby='keep-mounted-modal-title'
+            aria-describedby='keep-mounted-modal-description'
             closeAfterTransition
             slots={{ backdrop: Backdrop }}
             slotProps={{
@@ -57,20 +58,20 @@ export function VideoBGEffectModal({ open, setOpen }): ReactElement {
             <Fade in={open}>
                 <Box sx={style}>
                     <Typography
-                        id="keep-mounted-modal-title"
-                        variant="h6"
-                        component="h2"
+                        id='keep-mounted-modal-title'
+                        variant='h6'
+                        component='h2'
                     >
                         Video Background Effect
                     </Typography>
-                    <div className="row">
-                        <div className="col-12">
+                    <div className='row'>
+                        <div className='col-12'>
                             <video
-                                src="/assets/videos/test.mp4"
+                                src='/assets/videos/test.mp4'
                                 width={'100%'}
                                 controls={true}
                                 ref={videoEl}
-                                className="d-none"
+                                className='d-none'
                             ></video>
                             <canvas ref={canvasEl}></canvas>
                         </div>
@@ -78,5 +79,5 @@ export function VideoBGEffectModal({ open, setOpen }): ReactElement {
                 </Box>
             </Fade>
         </Modal>
-    )
+    );
 }
