@@ -13,7 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 
-const pages = ['Products', 'Pricing', 'Blog'];
+// const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function ResponsiveAppBar({ logo, navigation, contactNo }: Props) {
@@ -43,26 +43,17 @@ function ResponsiveAppBar({ logo, navigation, contactNo }: Props) {
         <AppBar position='fixed' sx={{}} className='nav-gradient'>
             <Container maxWidth='xl'>
                 <Toolbar disableGutters>
-                    <AdbIcon
+                    {/* <AdbIcon
                         sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
-                    />
-                    <Typography
-                        variant='h6'
-                        noWrap
-                        component='a'
-                        href={'.'}
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'none', md: 'flex' },
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    >
-                        LOGO
-                    </Typography>
+                    /> */}
+                    <a href='.'>
+                        <img
+                            // srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                            src={logo}
+                            alt='Logo'
+                            width={60}
+                        />
+                    </a>
 
                     <Box
                         sx={{
@@ -96,7 +87,7 @@ function ResponsiveAppBar({ logo, navigation, contactNo }: Props) {
                             onClose={handleCloseNavMenu}
                             sx={{ display: { xs: 'block', md: 'none' } }}
                         >
-                            {pages.map((page) => (
+                            {navigation.map((page) => (
                                 <MenuItem
                                     key={page}
                                     onClick={handleCloseNavMenu}
@@ -135,7 +126,7 @@ function ResponsiveAppBar({ logo, navigation, contactNo }: Props) {
                             display: { xs: 'none', md: 'flex' },
                         }}
                     >
-                        {pages.map((page) => (
+                        {navigation.map((page) => (
                             <Button
                                 key={page}
                                 onClick={handleCloseNavMenu}

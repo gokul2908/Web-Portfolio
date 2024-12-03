@@ -5,9 +5,11 @@ import './style.css';
 import GLightbox from 'glightbox';
 import 'glightbox/dist/css/glightbox.min.css';
 import { motion } from 'framer-motion';
-import { Container } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import PlayCircleFilledRoundedIcon from '@mui/icons-material/PlayCircleFilledRounded';
+import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
+
 interface Props {
     introText: string[];
     video: string;
@@ -46,7 +48,18 @@ function Intro({ introText, email, video }: Props): ReactElement {
                                 sx={{ pt: 4, pb: 4 }}
                                 className='display-2--description lh-base'
                             >
-                                {introText[1]}
+                                <Typography
+                                    variant='h6'
+                                    sx={{
+                                        mr: 2,
+                                        fontFamily: 'monospace',
+                                        fontWeight: 700,
+                                        color: 'white',
+                                        textDecoration: 'none',
+                                    }}
+                                >
+                                    {introText[1]}
+                                </Typography>
                             </Grid>
                         </Grid>
 
@@ -63,7 +76,7 @@ function Intro({ introText, email, video }: Props): ReactElement {
                         >
                             <Button
                                 text='Get in touch'
-                                icon={<i className='fas fa-arrow-right' />}
+                                icon={<AlternateEmailIcon />}
                                 onClick={() =>
                                     (window.location.href = `mailto:${email}?subject=problem-to-solve&body=Define%20your%20awesome%20problem%20here`)
                                 }
