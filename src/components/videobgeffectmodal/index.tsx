@@ -1,5 +1,4 @@
 import { Backdrop, Box, Fade, Modal, Typography } from '@mui/material';
-import helper from 'csvtojson';
 import { ReactElement, useEffect, useRef } from 'react';
 import { addBackgroundEffect } from './videoBGEffect';
 
