@@ -61,7 +61,7 @@ export default function Projects({
                 justifyContent='space-evenly'
                 style={{ overflow: 'hidden' }}
             >
-                {projects?.map(({ id, name, popupComponent }, idx) => (
+                {projects?.map(({ id, name, popupComponent, img_url }, idx) => (
                     <RenderpopupComponent
                         key={idx}
                         {...{
@@ -70,6 +70,7 @@ export default function Projects({
                             description: openSourceProjectsInfo[name],
                             idx,
                             popupComponent,
+                            img_url,
                         }}
                     />
                 ))}
@@ -161,7 +162,9 @@ function Project({
                     <Card sx={{ minWidth: 345 }} className=' my-3'>
                         <CardMedia
                             sx={{ height: 140 }}
-                            image='https://www.uib.no/sites/w3.uib.no/files/styles/content_main/public/media/colourbox3117235_no5859_edit.jpg?itok=kPbJVL51'
+                            image={
+                                'https://picsum.photos/690/280?random=' + custom
+                            }
                             title='green iguana'
                         />
                         <CardContent>
@@ -201,6 +204,7 @@ function Project({
 
 type ProjectWithPopup = {
     popupComponent: string;
+    img_url: string;
 } & ProjectProps;
 
 function RenderpopupComponent({
@@ -209,6 +213,7 @@ function RenderpopupComponent({
     html_url,
     idx: custom,
     popupComponent,
+    img_url,
 }: ProjectWithPopup): ReactElement | null {
     const cardRef = useRef(null);
 
@@ -239,8 +244,11 @@ function RenderpopupComponent({
                         <Card sx={{ minWidth: 345 }} className=' my-3'>
                             <CardMedia
                                 sx={{ height: 140 }}
-                                image='https://www.uib.no/sites/w3.uib.no/files/styles/content_main/public/media/colourbox3117235_no5859_edit.jpg?itok=kPbJVL51'
-                                title='green iguana'
+                                image={
+                                    img_url ||
+                                    'https://picsum.photos/690/280?random=1'
+                                }
+                                title='Project Picture'
                             />
                             <CardContent>
                                 <Typography
