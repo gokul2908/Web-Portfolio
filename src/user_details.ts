@@ -14,6 +14,7 @@ const user: any = [
                 name: 'Video Background Effect',
                 description: '',
                 popupComponent: 'VideoBGEffectModal',
+                img_url: 'https://picsum.photos/id/58/690/280'
             },
         ],
         email: 'gokulkumar2908@gmail.com',
