@@ -94,33 +94,6 @@ function ResponsiveAppBar({ logo, navigation, contactNo }: Props) {
             >
               {DrawerList}
             </Drawer>
-            {/* <Menu
-                            id='menu-appbar'
-                            anchorEl={anchorElNav}
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'left',
-                            }}
-                            open={Boolean(anchorElNav)}
-                            onClose={handleCloseNavMenu}
-                            sx={{ display: { xs: 'block', md: 'none' } }}
-                        >
-                            {navigation.map((page) => (
-                                <MenuItem
-                                    key={page}
-                                    onClick={handleCloseNavMenu}
-                                >
-                                    <Typography sx={{ textAlign: 'center' }}>
-                                        {page}
-                                    </Typography>
-                                </MenuItem>
-                            ))}
-                        </Menu> */}
           </Box>
           <Box
             component="section"

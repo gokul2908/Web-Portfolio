@@ -1,6 +1,7 @@
 const user: any = [
     {
         name: 'gokul2908',
+        metaTitle: 'Gokul Portfolio',
         logo: './images/gokul_logo.png',
         contactNo: 9047234234,
         introText: [
@@ -26,6 +27,7 @@ const user: any = [
     },
     {
         name: 'kesavamuthu',
+        metaTitle: 'K7 Portfolio',
         logo: './images/kesav_logo.jpg',
         introText: [
             ' ',
