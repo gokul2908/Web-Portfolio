@@ -59,7 +59,7 @@ export default function Projects({
                 spacing={2}
                 columns={12}
                 justifyContent='space-evenly'
-                style={{ overflow: 'hidden' }}
+                style={{ overflow: 'hidden', paddingBottom: '20px' }}
             >
                 {projects?.map(({ id, name, popupComponent, img_url }, idx) => (
                     <RenderpopupComponent
