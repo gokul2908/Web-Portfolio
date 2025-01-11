@@ -192,6 +192,7 @@ interface Props {
     logo: string;
     contactNo?: number;
     navigation: string[];
+    resumeLink?: string;
 }
 
 function Nav({ logo, navigation, contactNo }: Props): any {
