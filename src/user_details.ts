@@ -1,9 +1,9 @@
 const user: any = [
     {
-        name: "gokul2908",
+        name: "gokul",
         metaTitle: "Gokul Portfolio",
         logo: "./images/gokul_logo.png",
-        contactNo: 9047234234,
+        contactNo: 8825874403,
         introText: [
             "I am Gokul",
             "Portfolio using React, Typescript, material UI with animations & responsive layout",
