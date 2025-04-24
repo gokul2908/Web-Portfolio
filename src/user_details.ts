@@ -1,6 +1,7 @@
 const user: any = [
     {
         name: "gokul",
+        github: "gokul2908",
         metaTitle: "Gokul Portfolio",
         logo: "./images/gokul_logo.png",
         contactNo: 8825874403,
