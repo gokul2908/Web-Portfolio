@@ -23,6 +23,7 @@ interface Props {
 
 export default function Projects({
     name: profileName,
+    github,
     projects,
     filteredProjects,
     projectInfo,
@@ -37,7 +38,7 @@ export default function Projects({
                 if (!profileName) return;
 
                 const { data } = await axios.get(
-                    `https://api.github.com/users/${profileName}/repos`
+                    `https://api.github.com/users/${github || profileName}/repos`
                 );
                 setGitRepos(() =>
                     (data as Repos[]).filter(
