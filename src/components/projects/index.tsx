@@ -15,6 +15,7 @@ import { VideoBGEffectModal } from '../videobgeffectmodal';
 
 interface Props {
     name?: string;
+    github?: string;
     projects?: any[];
     filteredProjects?: string[];
     projectInfo: [{}];
