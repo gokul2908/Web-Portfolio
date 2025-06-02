@@ -1,17 +1,17 @@
-import axios from 'axios';
-import React, { ReactElement, useEffect, useRef, useState } from 'react';
-import { Repos } from '../../pages/homepage/userModel';
-import './style.css';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import { Container } from '@mui/material';
-import Grid from '@mui/material/Grid2';
-import { motion, useInView, Variants } from 'framer-motion';
-import { VideoBGEffectModal } from '../videobgeffectmodal';
+import axios from "axios";
+import React, { ReactElement, useEffect, useRef, useState } from "react";
+import { Repos } from "../../pages/homepage/userModel";
+import "./style.css";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import { Container } from "@mui/material";
+import Grid from "@mui/material/Grid2";
+import { motion, useInView, Variants } from "framer-motion";
+import { VideoBGEffectModal } from "../videobgeffectmodal";
 
 interface Props {
     name?: string;
@@ -31,7 +31,7 @@ export default function Projects({
     openSourceProjectsInfo,
 }: Props): ReactElement {
     const [gitRepos, setGitRepos] = useState<Repos[]>();
-    console.log('projectInfo:', projectInfo);
+    console.log("projectInfo:", projectInfo);
 
     useEffect(() => {
         const getGithubRepo = async () => {
@@ -39,7 +39,9 @@ export default function Projects({
                 if (!profileName) return;
 
                 const { data } = await axios.get(
-                    `https://api.github.com/users/${github || profileName}/repos`
+                    `https://api.github.com/users/${
+                        github || profileName
+                    }/repos`
                 );
                 setGitRepos(() =>
                     (data as Repos[]).filter(
@@ -55,13 +57,13 @@ export default function Projects({
     }, [profileName, filteredProjects, projects]);
 
     return (
-        <Container maxWidth='lg'>
+        <Container maxWidth="lg">
             <Grid
                 container
                 spacing={2}
                 columns={12}
-                justifyContent='space-evenly'
-                style={{ overflow: 'hidden', paddingBottom: '20px' }}
+                justifyContent="space-evenly"
+                style={{ overflow: "hidden", paddingBottom: "20px" }}
             >
                 {projects?.map(({ id, name, popupComponent, img_url }, idx) => (
                     <RenderpopupComponent
@@ -106,7 +108,7 @@ const cardVariants: Variants = {
         opacity: 0,
         scale: 0.8,
         transition: {
-            type: 'spring',
+            type: "spring",
             bounce: 0.6,
             duration: 1.2,
         },
@@ -117,7 +119,7 @@ const cardVariants: Variants = {
         opacity: 1,
         scale: 1,
         transition: {
-            type: 'spring',
+            type: "spring",
             bounce: 0.4,
             duration: 0.8,
         },
@@ -147,49 +149,49 @@ function Project({
 
     return (
         <motion.div
-            className='card-container'
+            className="card-container"
             ref={cardRef}
             custom={custom}
             variants={cardVariants}
-            initial='offscreen'
-            animate={inView ? 'onscreen' : 'offscreen'}
+            initial="offscreen"
+            animate={inView ? "onscreen" : "offscreen"}
             key={custom}
         >
             <motion.div
-                className='card'
+                className="card"
                 variants={cardVariants}
-                style={{ border: 'none' }}
+                style={{ border: "none" }}
             >
                 <Grid key={custom}>
-                    <Card sx={{ minWidth: 345 }} className=' my-3'>
+                    <Card sx={{ minWidth: 345 }} className=" my-3">
                         <CardMedia
                             sx={{ height: 140 }}
                             image={
-                                'https://picsum.photos/690/280?random=' + custom
+                                "https://picsum.photos/690/280?random=" + custom
                             }
-                            title='green iguana'
+                            title="green iguana"
                         />
                         <CardContent>
                             <Typography
                                 gutterBottom
-                                variant='h5'
-                                component='div'
+                                variant="h5"
+                                component="div"
                             >
                                 {name}
                             </Typography>
-                            <Typography variant='body2' color='text.secondary'>
-                                {description || ''}
+                            <Typography variant="body2" color="text.secondary">
+                                {description || ""}
                             </Typography>
                         </CardContent>
                         <CardActions>
-                            <Button size='small'>Share</Button>
+                            {/* <Button size='small'>Share</Button> */}
                             {!!html_url && (
                                 <Button
-                                    size='small'
+                                    size="small"
                                     onClick={() =>
                                         window.open(
-                                            html_url + '/' + name,
-                                            '_blank'
+                                            html_url + "/" + name,
+                                            "_blank"
                                         )
                                     }
                                 >
@@ -230,46 +232,46 @@ function RenderpopupComponent({
     return (
         <>
             <motion.div
-                className='card-container'
+                className="card-container"
                 ref={cardRef}
                 custom={custom}
                 variants={cardVariants}
-                initial='offscreen'
-                animate={inView ? 'onscreen' : 'offscreen'}
+                initial="offscreen"
+                animate={inView ? "onscreen" : "offscreen"}
             >
                 <motion.div
-                    className='card'
+                    className="card"
                     variants={cardVariants}
-                    style={{ border: 'none' }}
+                    style={{ border: "none" }}
                 >
                     <Grid key={custom}>
-                        <Card sx={{ minWidth: 345 }} className=' my-3'>
+                        <Card sx={{ minWidth: 345 }} className=" my-3">
                             <CardMedia
                                 sx={{ height: 140 }}
                                 image={
                                     img_url ||
-                                    'https://picsum.photos/690/280?random=1'
+                                    "https://picsum.photos/690/280?random=1"
                                 }
-                                title='Project Picture'
+                                title="Project Picture"
                             />
                             <CardContent>
                                 <Typography
                                     gutterBottom
-                                    variant='h5'
-                                    component='div'
+                                    variant="h5"
+                                    component="div"
                                 >
                                     {name}
                                 </Typography>
                                 <Typography
-                                    variant='body2'
-                                    color='text.secondary'
+                                    variant="body2"
+                                    color="text.secondary"
                                 >
-                                    {description || ''}
+                                    {description || ""}
                                 </Typography>
                             </CardContent>
                             <CardActions>
                                 <Button
-                                    size='small'
+                                    size="small"
                                     onClick={() => setShowPopup(true)}
                                 >
                                     Open
@@ -279,7 +281,7 @@ function RenderpopupComponent({
                     </Grid>
                 </motion.div>
             </motion.div>
-            {popupComponent === 'VideoBGEffectModal' && (
+            {popupComponent === "VideoBGEffectModal" && (
                 <VideoBGEffectModal
                     {...{ open: showPopup, setOpen: setShowPopup }}
                 />
