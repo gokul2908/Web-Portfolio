@@ -8,34 +8,26 @@ import "./homepage.css";
 import { Container } from "@mui/material";
 
 function Homepage(): ReactElement {
-  const { name } = useParams() as { name: string };
-  let userDetails = user.find((e: any) => e.name?.toLowerCase() === name); //not working
-  if (!userDetails) userDetails = user[0];
+    const { name } = useParams() as { name: string };
+    let userDetails = user.find((e: any) => e.name?.toLowerCase() === name); //not working
+    if (!userDetails) userDetails = user[0];
 
-  useEffect(() => {
-    document.title = userDetails.metaTitle;
-  }, [userDetails]);
+    useEffect(() => {
+        document.title = userDetails.metaTitle;
+    }, [userDetails]);
 
-  return (
-    <>
-      <ResponsiveAppBar {...userDetails} />
-      <Container
-        maxWidth="xl"
-        sx={{
-          width: "100%",
-          padding: "0px !important",
-        }}
-      >
-        <div className="y-mandatory">
-          <div className="wrapper">
-            {[Intro, Projects].map((Component, i) => (
-              <Component {...userDetails} key={i} />
-            ))}
-          </div>
-        </div>
-      </Container>
-    </>
-  );
+    return (
+        <>
+            <ResponsiveAppBar {...userDetails} />
+            <div className="y-mandatory">
+                <div className="wrapper">
+                    {[Intro, Projects].map((Component, i) => (
+                        <Component {...userDetails} key={i} />
+                    ))}
+                </div>
+            </div>
+        </>
+    );
 }
 
 export default Homepage;
