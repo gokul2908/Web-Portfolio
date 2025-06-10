@@ -163,7 +163,7 @@ function Project({
                 style={{ border: "none" }}
             >
                 <Grid key={custom}>
-                    <Card sx={{ minWidth: 345 }} className=" my-3">
+                    <Card sx={{ minWidth: 345 }} className="box-shadow-14 my-3">
                         <CardMedia
                             sx={{ height: 140 }}
                             image={
@@ -195,7 +195,7 @@ function Project({
                                         )
                                     }
                                 >
-                                    Learn More
+                                    Github
                                 </Button>
                             )}
                         </CardActions>
@@ -245,7 +245,7 @@ function RenderpopupComponent({
                     style={{ border: "none" }}
                 >
                     <Grid key={custom}>
-                        <Card sx={{ minWidth: 345 }} className=" my-3">
+                        <Card sx={{ minWidth: 345 }} className="box-shadow-14 my-3">
                             <CardMedia
                                 sx={{ height: 140 }}
                                 image={
