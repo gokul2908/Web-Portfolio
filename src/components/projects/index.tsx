@@ -57,13 +57,13 @@ export default function Projects({
     }, [profileName, filteredProjects, projects]);
 
     return (
-        <Container maxWidth="lg">
             <Grid
                 container
                 spacing={2}
                 columns={12}
                 justifyContent="space-evenly"
                 style={{ overflow: "hidden", paddingBottom: "20px" }}
+                sx={{padding: '20px'}}
             >
                 {projects?.map(({ id, name, popupComponent, img_url }, idx) => (
                     <RenderpopupComponent
@@ -98,7 +98,6 @@ export default function Projects({
                     )
                 )}
             </Grid>
-        </Container>
     );
 }
 const cardVariants: Variants = {
@@ -110,7 +109,7 @@ const cardVariants: Variants = {
         transition: {
             type: "spring",
             bounce: 0.6,
-            duration: 1.2,
+            duration: 2,
         },
     }),
     onscreen: {
@@ -245,7 +244,10 @@ function RenderpopupComponent({
                     style={{ border: "none" }}
                 >
                     <Grid key={custom}>
-                        <Card sx={{ minWidth: 345 }} className="box-shadow-14 my-3">
+                        <Card
+                            sx={{ minWidth: 345 }}
+                            className="box-shadow-14 my-3"
+                        >
                             <CardMedia
                                 sx={{ height: 140 }}
                                 image={
