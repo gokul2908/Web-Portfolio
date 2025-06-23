@@ -1,13 +1,13 @@
 import { Backdrop, Box, Fade, Modal, Typography } from "@mui/material";
 import { ReactElement, useEffect, useRef } from "react";
-import { addBackgroundEffect } from "./videoBGEffect";
+import { VideoProcessor } from "./videoBGEffect";
 
 const style = {
     position: "absolute",
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: "60vw",
+    width: "60%",
     bgcolor: "background.paper",
     border: "2px solid #000",
     boxShadow: 24,
@@ -23,19 +23,19 @@ export function VideoBGEffectModal({ open, setOpen }): ReactElement {
     const handleClose = () => {
         setOpen(false);
         if (bgRef.current) {
-            bgRef.current.resetVideoElements();
+            bgRef.current.stop();
         }
     };
 
     useEffect(() => {
         if (open) {
             if (!videoEl.current || !canvasEl.current) return;
-            const bgInstance = addBackgroundEffect(
+            const bgInstance = new VideoProcessor(
                 videoEl.current,
-                canvasEl.current
+                canvasEl.current, {}
             );
             bgRef.current = bgInstance;
-            bgInstance.showCropVideo();
+            bgInstance.start();
         }
     }, [open]);
 
