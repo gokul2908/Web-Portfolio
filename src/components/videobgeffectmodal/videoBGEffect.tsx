@@ -1,14 +1,19 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
+    Detection,
+    FaceDetector,
     FilesetResolver,
     ImageSegmenter,
     ImageSegmenterResult,
-} from '@mediapipe/tasks-vision';
+} from "@mediapipe/tasks-vision";
 
 const modelAssetPath =
-        'https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter/float16/latest/selfie_segmenter.tflite',
+        "https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter/float16/latest/selfie_segmenter.tflite",
     wasmCdn =
-        'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm';
+        "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm",
+    increaseCropSize = 5;
+
+let focusToFace = () => {};
 
 export function addBackgroundEffect(
     videoEl: HTMLVideoElement,
@@ -18,23 +23,23 @@ export function addBackgroundEffect(
             square: 1,
             landscape: 16 / 9,
             portrait: 9 / 16,
-            '3:4': 3 / 4,
-            '8:9': 8 / 9,
+            "3:4": 3 / 4,
+            "8:9": 8 / 9,
         },
         backgroundImgUrls: string[] = [
-            'https://images.pexels.com/photos/421927/pexels-photo-421927.jpeg',
-            'https://images.pexels.com/photos/366283/tianjin-twilight-city-scenery-366283.jpeg',
-            'https://images.pexels.com/photos/1209978/pexels-photo-1209978.jpeg',
-            'https://images.pexels.com/photos/112811/pexels-photo-112811.jpeg',
-            'https://images.pexels.com/photos/683929/pexels-photo-683929.jpeg',
-            'https://images.pexels.com/photos/1571458/pexels-photo-1571458.jpeg',
-            'https://images.pexels.com/photos/1534924/pexels-photo-1534924.jpeg',
-            'https://images.pexels.com/photos/271816/pexels-photo-271816.jpeg',
-            'https://images.pexels.com/photos/169677/pexels-photo-169677.jpeg',
-            'Background Blur',
+            "https://images.pexels.com/photos/421927/pexels-photo-421927.jpeg",
+            "https://images.pexels.com/photos/366283/tianjin-twilight-city-scenery-366283.jpeg",
+            "https://images.pexels.com/photos/1209978/pexels-photo-1209978.jpeg",
+            "https://images.pexels.com/photos/112811/pexels-photo-112811.jpeg",
+            "https://images.pexels.com/photos/683929/pexels-photo-683929.jpeg",
+            "https://images.pexels.com/photos/1571458/pexels-photo-1571458.jpeg",
+            "https://images.pexels.com/photos/1534924/pexels-photo-1534924.jpeg",
+            "https://images.pexels.com/photos/271816/pexels-photo-271816.jpeg",
+            "https://images.pexels.com/photos/169677/pexels-photo-169677.jpeg",
+            "Background Blur",
         ];
     let imageSegmenter: ImageSegmenter,
-        interfaceDelegate: 'CPU' | 'GPU' | undefined = 'GPU',
+        interfaceDelegate: "CPU" | "GPU" | undefined = "GPU",
         stream: MediaStream | null,
         aspectRatio = 1,
         canvasCtx: CanvasRenderingContext2D | null = null,
@@ -45,15 +50,15 @@ export function addBackgroundEffect(
         sWidth,
         sx = 0,
         sy = 0,
-        backgroundUrl = 'Background Blur',
+        backgroundUrl = "Background Blur",
         backgroundImageData,
         blurValue = 1;
 
     async function imageSegmenterInit(tryCount = 0) {
         const vision = await FilesetResolver.forVisionTasks(wasmCdn);
 
-        if (getBrowserName() === 'Mozilla Firefox') {
-            interfaceDelegate = 'CPU';
+        if (getBrowserName() === "Mozilla Firefox") {
+            interfaceDelegate = "CPU";
         }
 
         try {
@@ -62,7 +67,7 @@ export function addBackgroundEffect(
                     modelAssetPath,
                     delegate: interfaceDelegate,
                 },
-                runningMode: 'VIDEO',
+                runningMode: "VIDEO",
                 outputCategoryMask: false,
                 outputConfidenceMasks: true,
             });
@@ -70,10 +75,10 @@ export function addBackgroundEffect(
             console.log(labels);
         } catch (error) {
             if (tryCount === 0) {
-                interfaceDelegate = interfaceDelegate === 'GPU' ? 'CPU' : 'GPU';
+                interfaceDelegate = interfaceDelegate === "GPU" ? "CPU" : "GPU";
                 imageSegmenterInit(1);
             } else {
-                alert('Image segmenter Initialization failed');
+                alert("Image segmenter Initialization failed");
             }
         }
     }
@@ -98,7 +103,7 @@ export function addBackgroundEffect(
             videoEl.srcObject = stream;
             videoEl.play();
 
-            canvasCtx = canvasEl.getContext('2d');
+            canvasCtx = canvasEl.getContext("2d");
 
             videoEl.onloadedmetadata = whenVideoMetaDataLoaded;
         } catch (error) {
@@ -124,26 +129,108 @@ export function addBackgroundEffect(
             selfieWidth = videoEl.videoWidth;
             showFaceDetection();
 
-            if ('requestVideoFrameCallback' in HTMLVideoElement.prototype) {
-                console.info('Using requestVideoFrameCallback');
+            if ("requestVideoFrameCallback" in HTMLVideoElement.prototype) {
+                console.info("Using requestVideoFrameCallback");
                 videoEl.requestVideoFrameCallback(drawFrame);
             } else {
-                console.info('Using requestAnimationFrame');
+                console.info("Using requestAnimationFrame");
                 requestAnimationFrame(drawFrame);
             }
 
             if (canvasEl) canvasEl.style.aspectRatio = String(aspectRatio);
         } catch (error) {
-            console.error('videoEl onload metadata error', error);
+            console.error("videoEl onload metadata error", error);
         }
     };
 
-    function showFaceDetection() {}
+    async function showFaceDetection() {
+        if (!videoEl)
+            return console.error("unCroppedVideoEl Element is not found");
+        // const canvas: any = faceapi.createCanvas(videoEl);
+        // canvas.id = "audio_video_recording_popup_canvas_1";
+        // document.body.append(canvas);
 
+        const vision = await FilesetResolver.forVisionTasks(
+            "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
+        );
+        const faceDetector: FaceDetector = await FaceDetector.createFromOptions(
+            vision,
+            {
+                baseOptions: {
+                    modelAssetPath: `https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/latest/blaze_face_short_range.tflite`,
+                    delegate: "GPU",
+                },
+                runningMode: "IMAGE",
+            }
+        );
+        await faceDetector.setOptions({ runningMode: "IMAGE" });
+
+        const maxRunCount = 20;
+        let runCount = 0,
+            faceDetected = false;
+        focusToFace = async () => {
+            if (runCount >= maxRunCount) return;
+            //console.log('face detection call');
+            const detections: Detection[] =
+                faceDetector.detect(videoEl).detections;
+            runCount++;
+            console.log({ detections });
+            if (detections.length === 0) {
+                if (faceDetected) return;
+                setTimeout(() => focusToFace(), 100); // won't block thread
+                return;
+            }
+            const { boundingBox }: any = detections[0];
+            //console.log(_box);
+
+            const [c_x, c_y] = findCenterPoint(boundingBox);
+            console.log(c_x, c_y);
+            let width =
+                Math.min(
+                    boundingBox.width * increaseCropSize,
+                    videoEl.videoHeight
+                ) * aspectRatio;
+            // let height = width / videoAspectRatio;
+            let height = width / aspectRatio;
+
+            if (selfieAspectRatio && selfieAspectRatio < aspectRatio) {
+                width = videoEl.videoWidth;
+                height = width / aspectRatio;
+            }
+
+            sx = Math.max(c_x - width / 2, 0);
+            sy = Math.max(c_y - height / 2, 0);
+
+            // Ensure the crop area is within the bounds of the video
+            if (sx + width > videoEl.videoWidth) {
+                sx = videoEl.videoWidth - width;
+            }
+            if (sy + height > videoEl.videoHeight) {
+                sy = videoEl.videoHeight - height;
+            }
+            sy = sy > 0 ? sy * 0.85 : sy * 1.15;
+            sx = minDiffCheck(sx, sx);
+            sy = minDiffCheck(sy, sy);
+            sHeight = minDiffCheck(sHeight, Math.min(height, height));
+            sWidth = minDiffCheck(sWidth, Math.min(width, width));
+            console.log({sx, sy, sWidth, sHeight});
+            faceDetected = true;
+        };
+        focusToFace();
+    }
+
+    function minDiffCheck(prev: any, curr: any) {
+        if (Math.abs(prev - curr) > 20) return curr;
+        return prev;
+    }
+
+    function findCenterPoint({ originX, originY, width, height }: any) {
+        return [originX + width / 2, originY + height / 2];
+    }
     function resetVideoElements() {
         if (videoEl) {
             videoEl.srcObject = null;
-            videoEl.removeAttribute('src');
+            videoEl.removeAttribute("src");
             videoEl.onloadedmetadata = null;
         }
 
@@ -155,7 +242,7 @@ export function addBackgroundEffect(
 
     function getMaskData(now) {
         if (!imageSegmenter)
-            return console.error('Image segmenter ref not found');
+            return console.error("Image segmenter ref not found");
 
         resultMask = imageSegmenter.segmentForVideo(canvasEl, now);
     }
@@ -184,7 +271,7 @@ export function addBackgroundEffect(
 
         applyBackgroundEffectInFrame(now);
 
-        if ('requestVideoFrameCallback' in HTMLVideoElement.prototype) {
+        if ("requestVideoFrameCallback" in HTMLVideoElement.prototype) {
             videoEl.requestVideoFrameCallback(drawFrame);
         } else {
             requestAnimationFrame(drawFrame);
@@ -193,7 +280,7 @@ export function addBackgroundEffect(
 
     function applyBackgroundEffectInFrame(now) {
         const a = performance.now();
-        if (backgroundUrl === 'Background Blur') getBlurData();
+        if (backgroundUrl === "Background Blur") getBlurData();
 
         if (!canvasCtx) return;
         // Get current frame image data
@@ -208,8 +295,9 @@ export function addBackgroundEffect(
         const backgroundConfidentConstant = 0.5;
 
         if (resultMask) {
-            if (!imageData) console.error('Image data not available');
+            if (!imageData) console.error("Image data not available");
             const mask = resultMask.confidenceMasks?.[0]?.getAsFloat32Array();
+            // console.log({mask});
             if (mask && backgroundImageData) {
                 let j = 0;
                 for (let i = 0; i < mask.length; ++i) {
@@ -227,17 +315,17 @@ export function addBackgroundEffect(
     }
 
     function changeBackgroundEffect(imageUrl = backgroundUrl) {
-        if (imageUrl === 'Background Blur') return;
+        if (imageUrl === "Background Blur") return;
         return new Promise((resolve, reject) => {
             try {
                 const image = new Image();
-                image.crossOrigin = 'Anonymous'; // Enable cross-origin if the image is from a different origin
+                image.crossOrigin = "Anonymous"; // Enable cross-origin if the image is from a different origin
                 image.src = imageUrl;
 
                 image.onload = () => {
                     // Create a canvas element
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
+                    const canvas = document.createElement("canvas");
+                    const ctx = canvas.getContext("2d");
 
                     // Get video dimensions
                     const videoWidth = videoEl.videoWidth;
@@ -270,7 +358,7 @@ export function addBackgroundEffect(
                 image.onerror = () => {
                     reject(
                         new Error(
-                            'Failed to load the image from the provided URL.'
+                            "Failed to load the image from the provided URL."
                         )
                     );
                 };
@@ -279,11 +367,11 @@ export function addBackgroundEffect(
     }
 
     const getBlurData = (() => {
-        const offscreenCanvas = document.createElement('canvas');
-        const offscreenCtx = offscreenCanvas.getContext('2d');
+        const offscreenCanvas = document.createElement("canvas");
+        const offscreenCtx = offscreenCanvas.getContext("2d");
         return () => {
             try {
-                if (!offscreenCtx) return console.error('Get blur data error');
+                if (!offscreenCtx) return console.error("Get blur data error");
 
                 // Offscreen canvas setup for blurring
                 offscreenCanvas.width = canvasEl.width;
@@ -303,7 +391,7 @@ export function addBackgroundEffect(
                     canvasEl.height
                 ).data;
             } catch (error) {
-                console.error('Error getting blur background', error);
+                console.error("Error getting blur background", error);
             }
         };
     })();
@@ -314,17 +402,17 @@ export function addBackgroundEffect(
 function getBrowserName() {
     const userAgent = navigator.userAgent.toLowerCase();
 
-    if (userAgent.indexOf('edge') > -1) {
-        return 'Microsoft Edge';
-    } else if (userAgent.indexOf('chrome') > -1) {
-        return 'Google Chrome';
-    } else if (userAgent.indexOf('safari') > -1) {
-        return 'Apple Safari';
-    } else if (userAgent.indexOf('firefox') > -1) {
-        return 'Mozilla Firefox';
-    } else if (userAgent.indexOf('opera') > -1) {
-        return 'Opera';
+    if (userAgent.indexOf("edge") > -1) {
+        return "Microsoft Edge";
+    } else if (userAgent.indexOf("chrome") > -1) {
+        return "Google Chrome";
+    } else if (userAgent.indexOf("safari") > -1) {
+        return "Apple Safari";
+    } else if (userAgent.indexOf("firefox") > -1) {
+        return "Mozilla Firefox";
+    } else if (userAgent.indexOf("opera") > -1) {
+        return "Opera";
     } else {
-        return 'Unknown Browser';
+        return "Unknown Browser";
     }
 }
