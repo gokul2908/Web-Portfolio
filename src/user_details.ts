@@ -6,7 +6,7 @@ const user: any = [
         logo: "./images/gokul_logo.png",
         contactNo: 8825874403,
         introText: [
-            "I am Gokul",
+            "I am Gokulkumar",
             "Portfolio using React, Typescript, material UI with animations & responsive layout",
         ],
         video: "https://www.youtube.com/watch?v=f02mOEt11OQ",

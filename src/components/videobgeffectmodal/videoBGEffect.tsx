@@ -356,4 +356,13 @@ export class VideoProcessor {
         this.videoEl.srcObject = null;
         console.log("Video processor stopped and resources released.");
     }
+
+    public updateOptions(options: any) {
+        // Set default and user-provided options
+        this.backgroundSource = options.backgroundSource || "blur";
+        this.blurValue = options.blurValue || 10;
+        this.depth = options.depth || 0.5;
+        this.aspectRatio = options.aspectRatio || 16 / 9;
+        this.delegate = options.delegate || "GPU";
+    }
 }

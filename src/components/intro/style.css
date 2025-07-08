@@ -54,8 +54,8 @@
     top: 8%;
     left: 8%;
     border: 0.55rem solid rgb(63, 183, 192);
-    width: 4em;
-    height: 4rem;
+    width: 5em;
+    height: 5em;
     border-radius: 50%;
     animation: pulse-border 1.5s linear infinite;
 }
@@ -80,8 +80,8 @@
     .border-animation {
         top: 0;
         left: 0;
-        width: 3em;
-        height: 3rem;
+        width: 4em;
+        height: 4em;
     }
 
 }

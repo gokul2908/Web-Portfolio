@@ -38,7 +38,7 @@ function Intro({ introText, email, video }: Props): ReactElement {
         <section id='Home' className='intro-section'>
             <Container>
                 <Grid container spacing={3}>
-                    <Grid size={{ sm: 12, md: 6 }} className='intro'>
+                    <Grid size={{ sm: 12, md: 6 }} className='intro z-2'>
                         <Grid container>
                             <Grid id='intro-title' size={12} sx={{ pt: 4 }}>
                                 <Typography

@@ -6,6 +6,7 @@
     border: 0.1rem solid var(--white);
     background-color: var(--white);
     border-radius: 50rem;
+    color: black;
 
     span {
         position: absolute;
