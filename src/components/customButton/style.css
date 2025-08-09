@@ -1,49 +1,46 @@
 .btn-rounded {
-    position: relative;
-    padding: 0.9375rem 3.5rem 1rem 1rem;
-    font-weight: 800;
-    margin: 0;
-    border: 0.1rem solid var(--white);
-    background-color: var(--white);
-    border-radius: 50rem;
-    color: black;
+	position: relative;
+	padding: 0.9375rem 3.5rem 1rem 1rem;
+	font-weight: 800;
+	margin: 0;
+	border: 0.1rem solid var(--white);
+	background-color: var(--white);
+	border-radius: 50rem;
+	color: black;
 
-    span {
-        position: absolute;
-        background-color: var(--primary);
-        width: 2.5rem;
-        height: 2.5rem;
-        top: 50%;
-        right: 5px;
-        transform: translateY(-50%);
-        border-radius: 50%;
+	span {
+		position: absolute;
+		background-color: var(--primary);
+		width: 2.5rem;
+		height: 2.5rem;
+		top: 50%;
+		right: 5px;
+		transform: translateY(-50%);
+		border-radius: 50%;
 
-        i {
-            color: var(--white);
-            font-size: 1rem;
-            line-height: 2.5rem;
-        }
+		i {
+			color: var(--white);
+			font-size: 1rem;
+			line-height: 2.5rem;
+		}
 
-        svg {
-            position: relative;
-            top: 7px;
-            color: white;
-        }
-    }
+		svg {
+			position: relative;
+			top: 7px;
+			color: white;
+		}
+	}
 
-    &:hover {
+	&:hover {
+		background: linear-gradient(to right, var(--primary), var(--secondary));
+		color: var(--white);
 
-        background: linear-gradient(to right,
-                var(--primary),
-                var(--secondary));
-        color: var(--white);
+		span {
+			background-color: var(--black);
+		}
+	}
 
-        span {
-            background-color: var(--black);
-        }
-    }
-
-    @media (max-width: 575.98px) {
-        display: none;
-    }
+	@media (max-width: 575.98px) {
+		display: none;
+	}
 }

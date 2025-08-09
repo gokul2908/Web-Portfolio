@@ -1,94 +1,94 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
-    --purple-dark: #012255;
-    --pink-light: #144ca0;
-    --pink: #7302f2;
-    --white: #fff;
-    --gray-100: #f8f9fa;
-    --gray-200: #e9ecef;
-    --gray-300: #dee2e6;
-    --gray-400: #ced4da;
-    --gray-500: #adb5bd;
-    --gray-600: #6c757d;
-    --gray-700: #495057;
-    --gray-800: #343a40;
-    --gray-900: #212529;
-    --black: #000;
+	--purple-dark: #012255;
+	--pink-light: #144ca0;
+	--pink: #7302f2;
+	--white: #fff;
+	--gray-100: #f8f9fa;
+	--gray-200: #e9ecef;
+	--gray-300: #dee2e6;
+	--gray-400: #ced4da;
+	--gray-500: #adb5bd;
+	--gray-600: #6c757d;
+	--gray-700: #495057;
+	--gray-800: #343a40;
+	--gray-900: #212529;
+	--black: #000;
 
-    --primary: var(--purple-dark);
-    --secondary: var(--pink);
+	--primary: var(--purple-dark);
+	--secondary: var(--pink);
 
-    --accordion-icon-color: var(--primary);
-    --accordion-icon-active-color: var(--secondary);
-    --accordion-icon-width: 1.875rem;
+	--accordion-icon-color: var(--primary);
+	--accordion-icon-active-color: var(--secondary);
+	--accordion-icon-width: 1.875rem;
 
-    --accordion-button-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{--accordion-icon-color}'><path d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z'/></svg>");
-    --accordion-button-active-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{--accordion-icon-active-color}'><path d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM4.5 7.5a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1h-7z'/></svg>");
-    --white: #ffffff;
+	--accordion-button-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{--accordion-icon-color}'><path d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z'/></svg>");
+	--accordion-button-active-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{--accordion-icon-active-color}'><path d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM4.5 7.5a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1h-7z'/></svg>");
+	--white: #ffffff;
 }
 
 .App {
-    text-align: center;
+	text-align: center;
 }
 
 .App-logo {
-    height: 40vmin;
-    pointer-events: none;
+	height: 40vmin;
+	pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+	.App-logo {
+		animation: App-logo-spin infinite 20s linear;
+	}
 }
 
 .App-header {
-    background-color: var(--black);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+	background-color: var(--black);
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	font-size: calc(10px + 2vmin);
+	color: white;
 }
 
 .App-link {
-    color: #61dafb;
+	color: #61dafb;
 }
 
 @keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
+	from {
+		transform: rotate(0deg);
+	}
 
-    to {
-        transform: rotate(360deg);
-    }
+	to {
+		transform: rotate(360deg);
+	}
 }
 
 .display-2 {
-    margin-bottom: 1rem;
-    text-transform: capitalize;
-    font-family: 'Poppins', sans-serif;
+	margin-bottom: 1rem;
+	text-transform: capitalize;
+	font-family: 'Poppins', sans-serif;
 }
 
 @keyframes pulse-border {
-    0% {
-        transform: scale(1);
-        opacity: 1;
-    }
+	0% {
+		transform: scale(1);
+		opacity: 1;
+	}
 
-    100% {
-        transform: scale(1.5);
-        opacity: 0;
-    }
+	100% {
+		transform: scale(1.5);
+		opacity: 0;
+	}
 }
 
 .absoluteCenter {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 }
