@@ -21,7 +21,7 @@ const user: any = [
 			},
 		],
 		email: 'gokulkumar2908@gmail.com',
-		linkedin: 'https://www.linkedin.com/in/gokul-kumar-2908/',
+		linkedin: 'https://www.linkedin.com/in/gokulkumar-m/',
 		filteredProjects: ['ansys-fluent'],
 		projectInfo: [{}],
 		openSourceProjectsInfo: {
