@@ -54,6 +54,7 @@ export default function Projects({
 			spacing={2}
 			columns={12}
 			justifyContent="space-evenly"
+			id="Project"
 			style={{ overflow: 'hidden', paddingBottom: '20px' }}
 			sx={{ padding: '20px' }}
 		>

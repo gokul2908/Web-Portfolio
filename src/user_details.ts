@@ -11,7 +11,7 @@ const user: any = [
 		],
 		video: 'https://www.youtube.com/watch?v=f02mOEt11OQ',
 		navigation: ['Home', 'Project', 'Resume', 'Contact'],
-		resumeLink: '/assets/pdf/Resume - Google Docs.pdf',
+		resumeLink: '/assets/pdf/Resume_Gokulkumar.pdf',
 		projects: [
 			{
 				name: 'Video Background Effect',

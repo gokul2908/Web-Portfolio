@@ -79,7 +79,10 @@ function Intro({ introText, email, video }: Props): ReactElement {
 								stiffness: 400,
 								damping: 10,
 							}}
-							style={{ width: 'fit-content' }}
+							style={{ width: 'fit-content', cursor: 'pointer' }}
+							onClick={() =>
+								(window.location.href = `mailto:${email}?subject=problem-to-solve&body=Define%20your%20awesome%20problem%20here`)
+							}
 						>
 							<Button
 								text="Get in touch"
