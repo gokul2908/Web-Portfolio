@@ -12,6 +12,7 @@ import { Container } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { motion, useInView, Variants } from 'framer-motion';
 import { VideoBGEffectModal } from '../videobgeffectmodal';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
 interface Props {
 	name?: string;
@@ -51,12 +52,15 @@ export default function Projects({
 	return (
 		<Grid
 			container
-			spacing={2}
+			spacing={4}
 			columns={12}
-			justifyContent="space-evenly"
+			justifyContent="center"
 			id="Project"
-			style={{ overflow: 'hidden', paddingBottom: '20px' }}
-			sx={{ padding: '20px' }}
+			sx={{ 
+				padding: { xs: '40px 20px', md: '60px 40px' },
+				maxWidth: '1400px',
+				margin: '0 auto'
+			}}
 		>
 			{projects?.map(({ id, name, popupComponent, img_url }, idx) => (
 				<RenderpopupComponent
@@ -150,12 +154,16 @@ function Project({ name, description, html_url, idx: custom }: ProjectProps): Re
 			initial="offscreen"
 			animate={hasRendered ? 'onscreen' : 'offscreen'}
 			key={custom}
-			style={{ minHeight: '350px', display: 'flex' }}
+			style={{ 
+				display: 'flex', 
+				width: '100%',
+				justifyContent: 'center'
+			}}
 		>
 			{hasRendered && (
-				<motion.div className="card" variants={cardVariants} style={{ border: 'none', width: '100%' }}>
-					<Grid key={custom}>
-						<Card sx={{ minWidth: 345 }} className="box-shadow-14 my-3">
+				<motion.div className="card" variants={cardVariants} style={{ border: 'none', width: '100%', maxWidth: '400px' }}>
+					<Grid key={custom} size={{ xs: 12, sm: 10, md: 4 }}>
+						<Card sx={{ width: '100%' }} className="box-shadow-14 my-3">
 							<CardMedia
 								sx={{ height: 140 }}
 								image={'https://picsum.photos/690/280?random=' + custom}
@@ -171,7 +179,11 @@ function Project({ name, description, html_url, idx: custom }: ProjectProps): Re
 							</CardContent>
 							<CardActions>
 								{!!html_url && (
-									<Button size="small" onClick={() => window.open(html_url + '/' + name, '_blank')}>
+									<Button 
+										size="small" 
+										onClick={() => window.open(html_url + '/' + name, '_blank')}
+										endIcon={<OpenInNewIcon sx={{ fontSize: '1rem' }} />}
+									>
 										Github
 									</Button>
 								)}
@@ -222,12 +234,16 @@ function RenderpopupComponent({
 				variants={cardVariants}
 				initial="offscreen"
 				animate={hasRendered ? 'onscreen' : 'offscreen'}
-				style={{ minHeight: '350px', display: 'flex' }}
+				style={{ 
+					display: 'flex', 
+					width: '100%',
+					justifyContent: 'center'
+				}}
 			>
 				{hasRendered && (
-					<motion.div className="card" variants={cardVariants} style={{ border: 'none', width: '100%' }}>
-						<Grid key={custom}>
-							<Card sx={{ minWidth: 345 }} className="box-shadow-14 my-3">
+					<motion.div className="card" variants={cardVariants} style={{ border: 'none', width: '100%', maxWidth: '400px' }}>
+						<Grid key={custom} size={{ xs: 12, sm: 10, md: 4 }}>
+							<Card sx={{ width: '100%' }} className="box-shadow-14 my-3">
 								<CardMedia
 									sx={{ height: 140 }}
 									image={img_url || 'https://picsum.photos/690/280?random=1'}
@@ -242,7 +258,11 @@ function RenderpopupComponent({
 									</Typography>
 								</CardContent>
 								<CardActions>
-									<Button size="small" onClick={() => setShowPopup(true)}>
+									<Button 
+										size="small" 
+										onClick={() => setShowPopup(true)}
+										endIcon={<OpenInNewIcon sx={{ fontSize: '1rem' }} />}
+									>
 										Open
 									</Button>
 								</CardActions>

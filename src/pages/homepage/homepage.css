@@ -1,0 +1,17 @@
+.y-mandatory {
+	width: 100%;
+	overflow-x: hidden;
+}
+
+.wrapper {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+@media (max-width: 600px) {
+	.wrapper, .y-mandatory {
+		width: 100% !important;
+	}
+}

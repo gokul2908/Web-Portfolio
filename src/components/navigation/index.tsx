@@ -8,6 +8,10 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
+import HomeIcon from '@mui/icons-material/Home';
+import WorkIcon from '@mui/icons-material/Work';
+import DescriptionIcon from '@mui/icons-material/Description';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import ResumeModal from '../resumeModal';
 
 function ResponsiveAppBar({ logo, navigation, contactNo, resumeLink, email, linkedin }: Props) {
@@ -39,15 +43,24 @@ function ResponsiveAppBar({ logo, navigation, contactNo, resumeLink, email, link
 		} else if (text === 'Contact') {
 			onClick = () =>
 				(window.location.href = `mailto:${email}?subject=problem-to-solve&body=Define%20your%20awesome%20problem%20here`);
+		} else if (text === 'LinkedIn') {
+			href = linkedin || '#';
 		}
 
 		// Determine the icon
-		const Icon = index % 2 === 0 ? InboxIcon : MailIcon;
+		let Icon = index % 2 === 0 ? InboxIcon : MailIcon;
+		if (text === 'Home') Icon = HomeIcon;
+		if (text === 'Project') Icon = WorkIcon;
+		if (text === 'Resume') Icon = DescriptionIcon;
+		if (text === 'Contact') Icon = MailIcon;
+		if (text === 'LinkedIn') Icon = LinkedInIcon;
 
 		return (
 			<a
 				href={href || 'javascript:;'}
 				onClick={onClick}
+				target={text === 'LinkedIn' ? '_blank' : undefined}
+				rel={text === 'LinkedIn' ? 'noopener noreferrer' : undefined}
 				style={{ all: 'inherit', cursor: 'pointer' }}
 				aria-label={text} // Accessibility
 				title={text} // Tooltip on hover
@@ -144,7 +157,6 @@ function ResponsiveAppBar({ logo, navigation, contactNo, resumeLink, email, link
 								href = linkedin || '#';
 								onClick = () => {
 									handleCloseNavMenu();
-									if (linkedin) window.open(linkedin, '_blank');
 								};
 							}
 
@@ -152,6 +164,8 @@ function ResponsiveAppBar({ logo, navigation, contactNo, resumeLink, email, link
 								<a
 									key={page}
 									href={href}
+									target={page === 'LinkedIn' ? '_blank' : undefined}
+									rel={page === 'LinkedIn' ? 'noopener noreferrer' : undefined}
 									style={{ textDecoration: 'none' }}
 								>
 									<Button
