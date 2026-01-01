@@ -8,9 +8,11 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
+import ResumeModal from '../resumeModal';
 
-function ResponsiveAppBar({ logo, navigation, contactNo, resumeLink, email }: Props) {
+function ResponsiveAppBar({ logo, navigation, contactNo, resumeLink, email, linkedin }: Props) {
 	const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+	const [isResumeOpen, setIsResumeOpen] = React.useState(false);
 
 	const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorElNav(event.currentTarget);
@@ -20,13 +22,18 @@ function ResponsiveAppBar({ logo, navigation, contactNo, resumeLink, email }: Pr
 		setAnchorElNav(null);
 	};
 
+	// No longer using GLightbox for resume
+
 	const MyLink = ({ text, index }: { text: string; index: number }) => {
 		// Determine the href
 		let href: string | undefined = undefined;
-		let onClick: (() => void) | undefined = undefined;
+		let onClick: ((e: React.MouseEvent) => void) | undefined = undefined;
 
 		if (text === 'Resume') {
-			href = resumeLink;
+			onClick = (e: React.MouseEvent) => {
+				e.preventDefault();
+				setIsResumeOpen(true);
+			};
 		} else if (text === 'Project' || text === 'Home') {
 			href = `#${text}`;
 		} else if (text === 'Contact') {
@@ -41,8 +48,6 @@ function ResponsiveAppBar({ logo, navigation, contactNo, resumeLink, email }: Pr
 			<a
 				href={href || 'javascript:;'}
 				onClick={onClick}
-				target={text === 'Resume' ? '_blank' : undefined} // Open in new tab only if valid link
-				rel={text === 'Resume' ? 'noopener noreferrer' : undefined} // Security for external links
 				style={{ all: 'inherit', cursor: 'pointer' }}
 				aria-label={text} // Accessibility
 				title={text} // Tooltip on hover
@@ -120,10 +125,14 @@ function ResponsiveAppBar({ logo, navigation, contactNo, resumeLink, email }: Pr
 					>
 						{navigation.map((page) => {
 							let href = 'javascript:;';
-							let onClick = handleCloseNavMenu;
+							let onClick: ((e: React.MouseEvent) => void) | any = handleCloseNavMenu;
 
 							if (page === 'Resume') {
-								href = resumeLink || 'javascript:;';
+								onClick = (e: React.MouseEvent) => {
+									e.preventDefault();
+									handleCloseNavMenu();
+									setIsResumeOpen(true);
+								};
 							} else if (page === 'Project' || page === 'Home') {
 								href = `#${page}`;
 							} else if (page === 'Contact') {
@@ -131,13 +140,18 @@ function ResponsiveAppBar({ logo, navigation, contactNo, resumeLink, email }: Pr
 									handleCloseNavMenu();
 									window.location.href = `mailto:${email}?subject=problem-to-solve&body=Define%20your%20awesome%20problem%20here`;
 								};
+							} else if (page === 'LinkedIn') {
+								href = linkedin || '#';
+								onClick = () => {
+									handleCloseNavMenu();
+									if (linkedin) window.open(linkedin, '_blank');
+								};
 							}
 
 							return (
 								<a
 									key={page}
 									href={href}
-									target={page === 'Resume' ? '_blank' : undefined}
 									style={{ textDecoration: 'none' }}
 								>
 									<Button
@@ -156,6 +170,11 @@ function ResponsiveAppBar({ logo, navigation, contactNo, resumeLink, email }: Pr
 					</Box>
 				</Toolbar>
 			</Container>
+			<ResumeModal
+				open={isResumeOpen}
+				onClose={() => setIsResumeOpen(false)}
+				resumeUrl={resumeLink || ''}
+			/>
 		</AppBar>
 	);
 }
@@ -170,4 +189,5 @@ interface Props {
 	navigation: string[];
 	resumeLink?: string;
 	email?: string;
+	linkedin?: string;
 }

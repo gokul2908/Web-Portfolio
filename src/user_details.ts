@@ -10,7 +10,7 @@ const user: any = [
 			'Portfolio using React, Typescript, material UI with animations & responsive layout',
 		],
 		video: 'https://www.youtube.com/watch?v=f02mOEt11OQ',
-		navigation: ['Home', 'Project', 'Resume', 'Contact'],
+		navigation: ['Home', 'Project', 'Resume', 'Contact', 'LinkedIn'],
 		resumeLink: '/assets/pdf/Resume_Gokulkumar.pdf',
 		projects: [
 			{
@@ -21,6 +21,7 @@ const user: any = [
 			},
 		],
 		email: 'gokulkumar2908@gmail.com',
+		linkedin: 'https://www.linkedin.com/in/gokul-kumar-2908/',
 		filteredProjects: ['ansys-fluent'],
 		projectInfo: [{}],
 		openSourceProjectsInfo: {
