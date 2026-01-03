@@ -146,53 +146,52 @@ function Project({ name, description, html_url, idx: custom }: ProjectProps): Re
 	if (!name && !description) return null;
 
 	return (
-		<motion.div
-			className="card-container"
-			ref={cardRef}
-			custom={custom}
-			variants={cardVariants}
-			initial="offscreen"
-			animate={hasRendered ? 'onscreen' : 'offscreen'}
-			key={custom}
-			style={{ 
-				display: 'flex', 
-				width: '100%',
-				justifyContent: 'center'
-			}}
-		>
-			{hasRendered && (
-				<motion.div className="card" variants={cardVariants} style={{ border: 'none', width: '100%', maxWidth: '400px' }}>
-					<Grid key={custom} size={{ xs: 12, sm: 10, md: 4 }}>
-						<Card sx={{ width: '100%' }} className="box-shadow-14 my-3">
-							<CardMedia
-								sx={{ height: 140 }}
-								image={'https://picsum.photos/690/280?random=' + custom}
-								title="project preview"
-							/>
-							<CardContent>
-								<Typography gutterBottom variant="h5" component="div">
-									{name}
-								</Typography>
-								<Typography variant="body2" color="text.secondary">
-									{description || ''}
-								</Typography>
-							</CardContent>
-							<CardActions>
-								{!!html_url && (
-									<Button 
-										size="small" 
-										onClick={() => window.open(html_url + '/' + name, '_blank')}
-										endIcon={<OpenInNewIcon sx={{ fontSize: '1rem' }} />}
-									>
-										Github
-									</Button>
-								)}
-							</CardActions>
-						</Card>
-					</Grid>
-				</motion.div>
-			)}
-		</motion.div>
+		<Grid size={{ xs: 12, sm: 6, md: 4 }} sx={{ display: 'flex', justifyContent: 'center' }}>
+			<motion.div
+				className="card-container"
+				ref={cardRef}
+				custom={custom}
+				variants={cardVariants}
+				initial="offscreen"
+				animate={hasRendered ? 'onscreen' : 'offscreen'}
+				key={custom}
+				style={{ 
+					display: 'flex', 
+					width: '100%',
+					justifyContent: 'center',
+					minHeight: '350px'
+				}}
+			>
+				{hasRendered && (
+					<Card sx={{ width: '100%', maxWidth: 345 }} className="box-shadow-14 my-3">
+						<CardMedia
+							sx={{ height: 140 }}
+							image={'https://picsum.photos/690/280?random=' + custom}
+							title="project preview"
+						/>
+						<CardContent sx={{ flexGrow: 1 }}>
+							<Typography gutterBottom variant="h5" component="div">
+								{name}
+							</Typography>
+							<Typography variant="body2" color="text.secondary">
+								{description || ''}
+							</Typography>
+						</CardContent>
+						<CardActions sx={{ mt: 'auto' }}>
+							{!!html_url && (
+								<Button 
+									size="small" 
+									onClick={() => window.open(html_url + '/' + name, '_blank')}
+									endIcon={<OpenInNewIcon sx={{ fontSize: '1rem' }} />}
+								>
+									Github
+								</Button>
+							)}
+						</CardActions>
+					</Card>
+				)}
+			</motion.div>
+		</Grid>
 	);
 }
 
@@ -226,7 +225,7 @@ function RenderpopupComponent({
 
 	if (!name && !description) return null;
 	return (
-		<>
+		<Grid size={{ xs: 12, sm: 6, md: 4 }} sx={{ display: 'flex', justifyContent: 'center' }}>
 			<motion.div
 				className="card-container"
 				ref={cardRef}
@@ -237,43 +236,40 @@ function RenderpopupComponent({
 				style={{ 
 					display: 'flex', 
 					width: '100%',
-					justifyContent: 'center'
+					justifyContent: 'center',
+					minHeight: '350px'
 				}}
 			>
 				{hasRendered && (
-					<motion.div className="card" variants={cardVariants} style={{ border: 'none', width: '100%', maxWidth: '400px' }}>
-						<Grid key={custom} size={{ xs: 12, sm: 10, md: 4 }}>
-							<Card sx={{ width: '100%' }} className="box-shadow-14 my-3">
-								<CardMedia
-									sx={{ height: 140 }}
-									image={img_url || 'https://picsum.photos/690/280?random=1'}
-									title="Project Picture"
-								/>
-								<CardContent>
-									<Typography gutterBottom variant="h5" component="div">
-										{name}
-									</Typography>
-									<Typography variant="body2" color="text.secondary">
-										{description || ''}
-									</Typography>
-								</CardContent>
-								<CardActions>
-									<Button 
-										size="small" 
-										onClick={() => setShowPopup(true)}
-										endIcon={<OpenInNewIcon sx={{ fontSize: '1rem' }} />}
-									>
-										Open
-									</Button>
-								</CardActions>
-							</Card>
-						</Grid>
-					</motion.div>
+					<Card sx={{ width: '100%', maxWidth: 345 }} className="box-shadow-14 my-3">
+						<CardMedia
+							sx={{ height: 140 }}
+							image={img_url || 'https://picsum.photos/690/280?random=1'}
+							title="Project Picture"
+						/>
+						<CardContent sx={{ flexGrow: 1 }}>
+							<Typography gutterBottom variant="h5" component="div">
+								{name}
+							</Typography>
+							<Typography variant="body2" color="text.secondary">
+								{description || ''}
+							</Typography>
+						</CardContent>
+						<CardActions sx={{ mt: 'auto' }}>
+							<Button 
+								size="small" 
+								onClick={() => setShowPopup(true)}
+								endIcon={<OpenInNewIcon sx={{ fontSize: '1rem' }} />}
+							>
+								Open
+							</Button>
+						</CardActions>
+					</Card>
 				)}
 			</motion.div>
 			{showPopup && popupComponent === 'VideoBGEffectModal' && (
 				<VideoBGEffectModal {...{ open: showPopup, setOpen: setShowPopup }} />
 			)}
-		</>
+		</Grid>
 	);
 }
