@@ -6,7 +6,7 @@
 	border: 0.1rem solid var(--white);
 	background-color: var(--white);
 	border-radius: 50rem;
-	color: black;
+	color: oklch(0 0 0);
 	cursor: pointer;
 
 	span {
@@ -28,7 +28,7 @@
 		svg {
 			position: relative;
 			top: 7px;
-			color: white;
+			color: oklch(1 0 0);
 		}
 	}
 

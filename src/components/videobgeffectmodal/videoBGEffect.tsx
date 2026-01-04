@@ -136,7 +136,7 @@ export class VideoProcessor {
 				this.canvasCtx.putImageData(this.backgroundImageData, 0, 0);
 			} else {
 				// Or just fill with a color
-				this.canvasCtx.fillStyle = 'black';
+				this.canvasCtx.fillStyle = 'oklch(0 0 0)';
 				this.canvasCtx.fillRect(0, 0, this.canvasEl.width, this.canvasEl.height);
 			}
 

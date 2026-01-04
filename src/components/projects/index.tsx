@@ -7,6 +7,7 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { Container } from '@mui/material';
 import Grid from '@mui/material/Grid2';
@@ -146,7 +147,7 @@ function Project({ name, description, html_url, idx: custom }: ProjectProps): Re
 	if (!name && !description) return null;
 
 	return (
-		<Grid size={{ xs: 12, sm: 6, md: 4 }} sx={{ display: 'flex', justifyContent: 'center' }}>
+		<Grid size={{ xs: 12, sm: 6, md: 4 }} sx={{ display: 'flex' }}>
 			<motion.div
 				className="card-container"
 				ref={cardRef}
@@ -158,36 +159,88 @@ function Project({ name, description, html_url, idx: custom }: ProjectProps): Re
 				style={{ 
 					display: 'flex', 
 					width: '100%',
-					justifyContent: 'center',
-					minHeight: '350px'
+					height: '100%',
 				}}
 			>
 				{hasRendered && (
-					<Card sx={{ width: '100%', maxWidth: 345 }} className="box-shadow-14 my-3">
+					<Card 
+						sx={{ 
+							width: '100%', 
+							display: 'flex', 
+							flexDirection: 'column', 
+							height: '100%',
+							minHeight: '320px',
+							borderRadius: '16px',
+							overflow: 'hidden',
+							position: 'relative'
+						}} 
+						className="box-shadow-14"
+					>
+						{!!html_url && (
+							<IconButton 
+								size="small" 
+								onClick={() => window.open(html_url + '/' + name, '_blank')}
+								sx={{ 
+									position: 'absolute',
+									top: 12,
+									right: 12,
+									zIndex: 2,
+									backgroundColor: 'oklch(1 0 0 / 0.85)',
+									backdropFilter: 'blur(8px)',
+									color: 'var(--primary-accent)',
+									border: '1px solid oklch(1 0 0 / 0.4)',
+									boxShadow: '0 4px 12px oklch(0 0 0 / 0.1)',
+									'&:hover': {
+										backgroundColor: 'oklch(1 0 0)',
+										transform: 'scale(1.1)',
+										boxShadow: '0 6px 16px oklch(0 0 0 / 0.2)',
+									},
+									transition: 'all 0.2s ease-in-out'
+								}}
+							>
+								<OpenInNewIcon sx={{ fontSize: '1.2rem' }} />
+							</IconButton>
+						)}
 						<CardMedia
-							sx={{ height: 140 }}
-							image={'https://picsum.photos/690/280?random=' + custom}
+							sx={{ 
+								height: 180,
+								backgroundSize: 'cover'
+							}}
+							image={'https://picsum.photos/600/400?random=' + custom}
 							title="project preview"
 						/>
-						<CardContent sx={{ flexGrow: 1 }}>
-							<Typography gutterBottom variant="h5" component="div">
+						<CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', pt: 2, px: 2, pb: 1.5 }}>
+							<Typography 
+								variant="h6" 
+								component="div"
+								sx={{ 
+									fontWeight: 700,
+									display: '-webkit-box',
+									WebkitLineClamp: 2,
+									WebkitBoxOrient: 'vertical',
+									overflow: 'hidden',
+									lineHeight: 1.3,
+									mb: 0.5,
+									minHeight: '2.6em'
+								}}
+							>
 								{name}
 							</Typography>
-							<Typography variant="body2" color="text.secondary">
-								{description || ''}
+							<Typography 
+								variant="body2" 
+								color="text.secondary"
+								sx={{
+									display: '-webkit-box',
+									WebkitLineClamp: 2,
+									WebkitBoxOrient: 'vertical',
+									overflow: 'hidden',
+									lineHeight: 1.5,
+									minHeight: '3em'
+								}}
+							>
+								{description || 'No description available for this project.'}
 							</Typography>
 						</CardContent>
-						<CardActions sx={{ mt: 'auto' }}>
-							{!!html_url && (
-								<Button 
-									size="small" 
-									onClick={() => window.open(html_url + '/' + name, '_blank')}
-									endIcon={<OpenInNewIcon sx={{ fontSize: '1rem' }} />}
-								>
-									Github
-								</Button>
-							)}
-						</CardActions>
 					</Card>
 				)}
 			</motion.div>
@@ -225,7 +278,7 @@ function RenderpopupComponent({
 
 	if (!name && !description) return null;
 	return (
-		<Grid size={{ xs: 12, sm: 6, md: 4 }} sx={{ display: 'flex', justifyContent: 'center' }}>
+		<Grid size={{ xs: 12, sm: 6, md: 4 }} sx={{ display: 'flex' }}>
 			<motion.div
 				className="card-container"
 				ref={cardRef}
@@ -236,34 +289,86 @@ function RenderpopupComponent({
 				style={{ 
 					display: 'flex', 
 					width: '100%',
-					justifyContent: 'center',
-					minHeight: '350px'
+					height: '100%',
 				}}
 			>
 				{hasRendered && (
-					<Card sx={{ width: '100%', maxWidth: 345 }} className="box-shadow-14 my-3">
+					<Card 
+						sx={{ 
+							width: '100%', 
+							display: 'flex', 
+							flexDirection: 'column', 
+							height: '100%',
+							minHeight: '320px',
+							borderRadius: '16px',
+							overflow: 'hidden',
+							position: 'relative'
+						}} 
+						className="box-shadow-14"
+					>
+						<IconButton 
+							size="small" 
+							onClick={() => setShowPopup(true)}
+							sx={{ 
+								position: 'absolute',
+								top: 12,
+								right: 12,
+								zIndex: 2,
+								backgroundColor: 'oklch(1 0 0 / 0.85)',
+								backdropFilter: 'blur(8px)',
+								color: 'var(--primary-accent)',
+								border: '1px solid oklch(1 0 0 / 0.4)',
+								boxShadow: '0 4px 12px oklch(0 0 0 / 0.1)',
+								'&:hover': {
+									backgroundColor: 'oklch(1 0 0)',
+									transform: 'scale(1.1)',
+									boxShadow: '0 6px 16px oklch(0 0 0 / 0.2)',
+								},
+								transition: 'all 0.2s ease-in-out'
+							}}
+						>
+							<OpenInNewIcon sx={{ fontSize: '1.2rem' }} />
+						</IconButton>
 						<CardMedia
-							sx={{ height: 140 }}
-							image={img_url || 'https://picsum.photos/690/280?random=1'}
+							sx={{ 
+								height: 180,
+								backgroundSize: 'cover'
+							}}
+							image={img_url || 'https://picsum.photos/600/400?random=1'}
 							title="Project Picture"
 						/>
-						<CardContent sx={{ flexGrow: 1 }}>
-							<Typography gutterBottom variant="h5" component="div">
+						<CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', pt: 2, px: 2, pb: 1.5 }}>
+							<Typography 
+								variant="h6" 
+								component="div"
+								sx={{ 
+									fontWeight: 700,
+									display: '-webkit-box',
+									WebkitLineClamp: 2,
+									WebkitBoxOrient: 'vertical',
+									overflow: 'hidden',
+									lineHeight: 1.3,
+									mb: 0.5,
+									minHeight: '2.6em'
+								}}
+							>
 								{name}
 							</Typography>
-							<Typography variant="body2" color="text.secondary">
-								{description || ''}
+							<Typography 
+								variant="body2" 
+								color="text.secondary"
+								sx={{
+									display: '-webkit-box',
+									WebkitLineClamp: 2,
+									WebkitBoxOrient: 'vertical',
+									overflow: 'hidden',
+									lineHeight: 1.5,
+									minHeight: '3em'
+								}}
+							>
+								{description || 'Interactive project with custom background effects.'}
 							</Typography>
 						</CardContent>
-						<CardActions sx={{ mt: 'auto' }}>
-							<Button 
-								size="small" 
-								onClick={() => setShowPopup(true)}
-								endIcon={<OpenInNewIcon sx={{ fontSize: '1rem' }} />}
-							>
-								Open
-							</Button>
-						</CardActions>
 					</Card>
 				)}
 			</motion.div>

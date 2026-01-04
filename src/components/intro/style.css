@@ -51,7 +51,7 @@
 	position: absolute;
 	top: 8%;
 	left: 8%;
-	border: 0.55rem solid rgb(63, 183, 192);
+	border: 0.55rem solid oklch(0.68 0.13 218);
 	width: 5em;
 	height: 5em;
 	border-radius: 50%;

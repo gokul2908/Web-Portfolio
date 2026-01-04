@@ -172,7 +172,7 @@ function ResponsiveAppBar({ logo, navigation, contactNo, resumeLink, email, link
 										onClick={onClick}
 										sx={{
 											my: 2,
-											color: 'white',
+											color: 'oklch(1 0 0)',
 											display: 'block',
 										}}
 									>

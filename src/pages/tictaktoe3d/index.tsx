@@ -13,12 +13,12 @@ function TicTacToe3D(): ReactElement {
 
 	const [player1, setPlayer1] = useState<Player>({
 		name: '',
-		color: '#ff4444',
+		color: 'oklch(0.63 0.26 29)',
 		mark: 'X',
 	});
 	const [player2, setPlayer2] = useState<Player>({
 		name: '',
-		color: '#44aaff',
+		color: 'oklch(0.70 0.15 250)',
 		mark: 'O',
 	});
 	const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null);
@@ -30,7 +30,7 @@ function TicTacToe3D(): ReactElement {
 
 		// Scene Setup
 		const scene = new THREE.Scene();
-		scene.background = new THREE.Color('#f5f5f5');
+		scene.background = new THREE.Color('oklch(0.97 0 0)');
 
 		const camera = new THREE.PerspectiveCamera(
 			45,
@@ -65,7 +65,7 @@ function TicTacToe3D(): ReactElement {
 		for (let row = 0; row < gridSize; row++) {
 			for (let col = 0; col < gridSize; col++) {
 				const cellMat = new THREE.MeshStandardMaterial({
-					color: '#ddd',
+					color: 'oklch(0.88 0 0)',
 					side: THREE.DoubleSide,
 				});
 				const cell = new THREE.Mesh(cellGeo, cellMat);
@@ -78,7 +78,7 @@ function TicTacToe3D(): ReactElement {
 				// Border lines
 				const border = new THREE.LineSegments(
 					new THREE.EdgesGeometry(cellGeo),
-					new THREE.LineBasicMaterial({ color: '#999' }),
+					new THREE.LineBasicMaterial({ color: 'oklch(0.68 0 0)' }),
 				);
 				border.rotation.x = -Math.PI / 2;
 				border.position.copy(cell.position);

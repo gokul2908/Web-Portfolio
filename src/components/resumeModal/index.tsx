@@ -37,7 +37,7 @@ const ResumeModal: React.FC<ResumeModalProps> = ({ open, onClose, resumeUrl }) =
 			}}
 			sx={{
 				'& .MuiDialog-container': {
-					backgroundColor: 'rgba(0, 0, 0, 0.8)',
+					backgroundColor: 'oklch(0 0 0 / 0.8)',
 				}
 			}}
 		>
@@ -48,10 +48,10 @@ const ResumeModal: React.FC<ResumeModalProps> = ({ open, onClose, resumeUrl }) =
 					position: 'fixed',
 					top: 16,
 					right: 16,
-					color: 'white',
-					bgcolor: 'rgba(0,0,0,0.5)',
+					color: 'oklch(1 0 0)',
+					bgcolor: 'oklch(0 0 0 / 0.5)',
 					'&:hover': {
-						bgcolor: 'rgba(0,0,0,0.8)',
+						bgcolor: 'oklch(0 0 0 / 0.8)',
 					},
 					zIndex: 2000,
 				}}

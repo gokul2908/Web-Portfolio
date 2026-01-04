@@ -1,20 +1,20 @@
 @import 'tailwindcss';
 
 :root {
-	--purple-dark: #012255;
-	--pink-light: #144ca0;
-	--pink: #7302f2;
-	--white: #fff;
-	--gray-100: #f8f9fa;
-	--gray-200: #e9ecef;
-	--gray-300: #dee2e6;
-	--gray-400: #ced4da;
-	--gray-500: #adb5bd;
-	--gray-600: #6c757d;
-	--gray-700: #495057;
-	--gray-800: #343a40;
-	--gray-900: #212529;
-	--black: #000;
+	--purple-dark: oklch(0.24 0.08 262);
+	--pink-light: oklch(0.38 0.17 262);
+	--pink: oklch(0.45 0.31 292);
+	--white: oklch(1 0 0);
+	--gray-100: oklch(0.98 0.01 245);
+	--gray-200: oklch(0.95 0.01 245);
+	--gray-300: oklch(0.91 0.01 245);
+	--gray-400: oklch(0.86 0.01 245);
+	--gray-500: oklch(0.78 0.01 245);
+	--gray-600: oklch(0.57 0.01 245);
+	--gray-700: oklch(0.46 0.01 245);
+	--gray-800: oklch(0.36 0.01 245);
+	--gray-900: oklch(0.28 0.01 245);
+	--black: oklch(0 0 0);
 
 	--primary: var(--purple-dark);
 	--secondary: var(--pink);
@@ -25,7 +25,6 @@
 
 	--accordion-button-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{--accordion-icon-color}'><path d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z'/></svg>");
 	--accordion-button-active-icon: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='#{--accordion-icon-active-color}'><path d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM4.5 7.5a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1h-7z'/></svg>");
-	--white: #ffffff;
 }
 
 .App {
@@ -55,7 +54,7 @@
 }
 
 .App-link {
-	color: #61dafb;
+	color: oklch(0.82 0.12 218);
 }
 
 @keyframes App-logo-spin {
