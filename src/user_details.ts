@@ -10,7 +10,7 @@ const user: any = [
 			'Portfolio using React, Typescript, material UI with animations & responsive layout',
 		],
 		video: 'https://www.youtube.com/watch?v=f02mOEt11OQ',
-		navigation: ['Home', 'Project', 'Resume', 'Contact', 'LinkedIn'],
+		navigation: ['Home', 'Project', 'Typing', 'Resume', 'Contact', 'LinkedIn'],
 		resumeLink: '/assets/pdf/Resume_Gokulkumar.pdf',
 		projects: [
 			{

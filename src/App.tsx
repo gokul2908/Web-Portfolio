@@ -5,12 +5,9 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import React from 'react';
 import Users from './pages/users';
 import TicTacToe3D from './pages/tictaktoe3d';
+import TypingTrainer from './pages/typing';
 
 const router = createBrowserRouter([
-	{
-		path: '/:name',
-		element: <Homepage />,
-	},
 	{
 		path: '/',
 		element: <Users />,
@@ -18,6 +15,14 @@ const router = createBrowserRouter([
 	{
 		path: '/tictactoe',
 		element: <TicTacToe3D />,
+	},
+	{
+		path: '/typing',
+		element: <TypingTrainer />,
+	},
+	{
+		path: '/:name',
+		element: <Homepage />,
 	},
 ]);
 

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -12,11 +13,13 @@ import HomeIcon from '@mui/icons-material/Home';
 import WorkIcon from '@mui/icons-material/Work';
 import DescriptionIcon from '@mui/icons-material/Description';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import KeyboardIcon from '@mui/icons-material/Keyboard';
 import ResumeModal from '../resumeModal';
 
 function ResponsiveAppBar({ logo, navigation, contactNo, resumeLink, email, linkedin }: Props) {
 	const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
 	const [isResumeOpen, setIsResumeOpen] = React.useState(false);
+	const navigate = useNavigate();
 
 	const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorElNav(event.currentTarget);
@@ -40,6 +43,12 @@ function ResponsiveAppBar({ logo, navigation, contactNo, resumeLink, email, link
 			};
 		} else if (text === 'Project' || text === 'Home') {
 			href = `#${text}`;
+		} else if (text === 'Typing') {
+			href = '/typing';
+			onClick = (e: React.MouseEvent) => {
+				e.preventDefault();
+				navigate('/typing');
+			};
 		} else if (text === 'Contact') {
 			onClick = () =>
 				(window.location.href = `mailto:${email}?subject=problem-to-solve&body=Define%20your%20awesome%20problem%20here`);
@@ -51,6 +60,7 @@ function ResponsiveAppBar({ logo, navigation, contactNo, resumeLink, email, link
 		let Icon = index % 2 === 0 ? InboxIcon : MailIcon;
 		if (text === 'Home') Icon = HomeIcon;
 		if (text === 'Project') Icon = WorkIcon;
+		if (text === 'Typing') Icon = KeyboardIcon;
 		if (text === 'Resume') Icon = DescriptionIcon;
 		if (text === 'Contact') Icon = MailIcon;
 		if (text === 'LinkedIn') Icon = LinkedInIcon;
@@ -148,6 +158,13 @@ function ResponsiveAppBar({ logo, navigation, contactNo, resumeLink, email, link
 								};
 							} else if (page === 'Project' || page === 'Home') {
 								href = `#${page}`;
+							} else if (page === 'Typing') {
+								href = '/typing';
+								onClick = (e: React.MouseEvent) => {
+									e.preventDefault();
+									handleCloseNavMenu();
+									navigate('/typing');
+								};
 							} else if (page === 'Contact') {
 								onClick = () => {
 									handleCloseNavMenu();
