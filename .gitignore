@@ -27,3 +27,6 @@ dist-ssr
 .netlify
 
 notes.txt
+
+# Local Claude Code config (skills symlinks point at user-local paths)
+.claude/
