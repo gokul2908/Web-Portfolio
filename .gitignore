@@ -28,5 +28,6 @@ dist-ssr
 
 notes.txt
 
-# Local Claude Code config (skills symlinks point at user-local paths)
-.claude/
+# Local Claude Code config — keep skills (now relative symlinks), ignore everything else
+.claude/*
+!.claude/skills/
