@@ -40,7 +40,7 @@ A tag attached to each **PassageLibrary** entry (literary / tech / code / pangra
 _Avoid_: Tag, type, kind.
 
 **CustomPassage**:
-A **Passage** the visitor pastes in at the typing surface. Single-use by default — lives only for the current **Run**, not persisted to the **Profile**. Subject to a length cap to keep paste-in from becoming "type War and Peace".
+A **Passage** the visitor pastes in at the typing surface. Persisted in the **Profile** *while in progress* — survives crashes and page reloads mid-typing — and cleared once the visitor completes it (still single-use within a session, but recoverable across refreshes). Length is bounded only at the upper end by a localStorage-safety cap (~50,000 chars); the visitor can paste anything from a short tweet to a long chapter.
 _Avoid_: User passage, pasted text, custom text.
 
 **Keyset**:

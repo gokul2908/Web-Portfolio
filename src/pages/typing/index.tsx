@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 
 const MONO_STACK =
 	'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace';
@@ -135,7 +135,55 @@ const PASSAGE_LIBRARY: LibraryEntry[] = [
 ];
 
 const CUSTOM_PASSAGE_MIN_CHARS = 20;
-const CUSTOM_PASSAGE_MAX_CHARS = 500;
+const CUSTOM_PASSAGE_MAX_CHARS = 50000;
+const PASSAGE_CHUNK_TARGET = 200;
+
+function chunkPassage(text: string, target = PASSAGE_CHUNK_TARGET): string[] {
+	if (text.length <= target) return [text];
+	const chunks: string[] = [];
+	let i = 0;
+	while (i < text.length) {
+		if (text.length - i <= Math.floor(target * 1.4)) {
+			chunks.push(text.slice(i));
+			break;
+		}
+		const idealEnd = i + target;
+		const searchStart = i + Math.floor(target * 0.55);
+		const searchEnd = Math.min(i + Math.floor(target * 1.25), text.length);
+		let breakAt = -1;
+
+		for (let j = idealEnd; j >= searchStart; j--) {
+			const c = text[j - 1];
+			if (c === '.' || c === '!' || c === '?') {
+				breakAt = j;
+				while (breakAt < text.length && text[breakAt] === ' ') breakAt++;
+				break;
+			}
+		}
+		if (breakAt === -1) {
+			for (let j = idealEnd; j <= searchEnd; j++) {
+				const c = text[j - 1];
+				if (c === '.' || c === '!' || c === '?') {
+					breakAt = j;
+					while (breakAt < text.length && text[breakAt] === ' ') breakAt++;
+					break;
+				}
+			}
+		}
+		if (breakAt === -1) {
+			for (let j = idealEnd; j >= searchStart; j--) {
+				if (text[j] === ' ') {
+					breakAt = j + 1;
+					break;
+				}
+			}
+		}
+		if (breakAt === -1 || breakAt <= i) breakAt = idealEnd;
+		chunks.push(text.slice(i, breakAt));
+		i = breakAt;
+	}
+	return chunks;
+}
 
 type FocusState = 'idle' | 'active';
 type Mode = 'lesson' | 'passage';
@@ -157,6 +205,7 @@ type PersistedProfile = {
 	dailyGoalMs: number;
 	tracking: boolean;
 	passageCategory: CategoryFilter;
+	customPassage: string | null;
 };
 
 const DAILY_GOAL_PRESETS_MS: { label: string; ms: number }[] = [
@@ -284,7 +333,7 @@ export default function TypingTrainer() {
 			startingMode,
 			p.keyset ?? INITIAL_KEYSET,
 			p.passageCategory ?? 'all',
-			null,
+			p.customPassage ?? null,
 		);
 	});
 	const [heatmap, setHeatmap] = useState<Heatmap>(
@@ -317,13 +366,16 @@ export default function TypingTrainer() {
 	const [passageCategory, setPassageCategory] = useState<CategoryFilter>(
 		() => loadProfile().passageCategory ?? 'all',
 	);
-	const [customPassage, setCustomPassage] = useState<string | null>(null);
+	const [customPassage, setCustomPassage] = useState<string | null>(
+		() => loadProfile().customPassage ?? null,
+	);
 	const [settingsOpen, setSettingsOpen] = useState(false);
 	const [pasteModalOpen, setPasteModalOpen] = useState(false);
 	const [pasteInput, setPasteInput] = useState('');
 	const [, setTick] = useState(0);
 
 	const surfaceRef = useRef<HTMLDivElement>(null);
+	const activeChunkRef = useRef<HTMLDivElement>(null);
 	const pressedClearRef = useRef<number | null>(null);
 	const unlockClearRef = useRef<number | null>(null);
 	const lastCorrectAtRef = useRef<number | null>(null);
@@ -337,6 +389,35 @@ export default function TypingTrainer() {
 		(stintStartRef.current !== null
 			? Date.now() - stintStartRef.current
 			: 0);
+
+	const chunks = useMemo(() => chunkPassage(lessonText), [lessonText]);
+	const chunkStarts = useMemo(() => {
+		const starts: number[] = [0];
+		let pos = 0;
+		for (let i = 0; i < chunks.length - 1; i++) {
+			pos += chunks[i].length;
+			starts.push(pos);
+		}
+		return starts;
+	}, [chunks]);
+	let activeChunkIdx = 0;
+	for (let i = chunks.length - 1; i >= 0; i--) {
+		if (currentIndex >= chunkStarts[i]) {
+			activeChunkIdx = i;
+			break;
+		}
+	}
+
+	const [chunkOffset, setChunkOffset] = useState(0);
+	useEffect(() => {
+		if (chunks.length <= 1) {
+			setChunkOffset(0);
+			return;
+		}
+		if (activeChunkRef.current) {
+			setChunkOffset(activeChunkRef.current.offsetTop);
+		}
+	}, [activeChunkIdx, chunks.length, lessonText]);
 
 	useEffect(
 		() => () => {
@@ -360,6 +441,7 @@ export default function TypingTrainer() {
 			dailyGoalMs,
 			tracking,
 			passageCategory,
+			customPassage,
 		});
 	}, [
 		keyset,
@@ -371,6 +453,7 @@ export default function TypingTrainer() {
 		dailyGoalMs,
 		tracking,
 		passageCategory,
+		customPassage,
 	]);
 
 	const timerRunning = focusState === 'active' && hasTyped && !completed;
@@ -650,7 +733,10 @@ export default function TypingTrainer() {
 
 	function handleModeChange(next: Mode) {
 		if (next === mode) return;
-		resetRun(next, generateLessonText(next, keyset, passageCategory, null));
+		resetRun(
+			next,
+			generateLessonText(next, keyset, passageCategory, customPassage),
+		);
 	}
 
 	function handleTrackingChange(next: boolean) {
@@ -755,35 +841,68 @@ export default function TypingTrainer() {
 					<div className="relative w-full">
 						<div
 							className="text-2xl leading-relaxed tracking-wide select-none whitespace-pre-wrap break-words"
-							style={{ minHeight: '8rem' }}
+							style={{
+								minHeight: '8rem',
+								maxHeight: chunks.length > 1 ? '14rem' : 'none',
+								overflow: 'hidden',
+							}}
 						>
-							{lessonText.split('').map((char, i) => {
-								let state:
-									| 'typed'
-									| 'typed-wrong'
-									| 'current'
-									| 'error'
-									| 'pending';
-								if (i < currentIndex) {
-									if (mode === 'passage' && typedChars[i] !== char) {
-										state = 'typed-wrong';
-									} else {
-										state = 'typed';
-									}
-								} else if (i === currentIndex) {
-									state = errorChar ? 'error' : 'current';
-								} else {
-									state = 'pending';
-								}
-								return (
-									<Char
-										key={i}
-										char={char}
-										state={state}
-										errorChar={errorChar}
-									/>
-								);
-							})}
+							<div
+								style={{
+									transform: `translateY(-${chunkOffset}px)`,
+									transition:
+										'transform 380ms cubic-bezier(0.4, 0, 0.2, 1)',
+								}}
+							>
+								{chunks.map((chunkText, chunkIdx) => {
+									const chunkStart = chunkStarts[chunkIdx];
+									const isActive = chunkIdx === activeChunkIdx;
+									return (
+										<div
+											key={chunkIdx}
+											ref={isActive ? activeChunkRef : null}
+											style={{
+												opacity: isActive ? 1 : 0.25,
+												transition: 'opacity 220ms ease',
+												paddingBottom:
+													chunks.length > 1 ? '1rem' : 0,
+											}}
+										>
+											{chunkText.split('').map((char, j) => {
+												const i = chunkStart + j;
+												let state:
+													| 'typed'
+													| 'typed-wrong'
+													| 'current'
+													| 'error'
+													| 'pending';
+												if (i < currentIndex) {
+													if (
+														mode === 'passage' &&
+														typedChars[i] !== char
+													) {
+														state = 'typed-wrong';
+													} else {
+														state = 'typed';
+													}
+												} else if (i === currentIndex) {
+													state = errorChar ? 'error' : 'current';
+												} else {
+													state = 'pending';
+												}
+												return (
+													<Char
+														key={i}
+														char={char}
+														state={state}
+														errorChar={errorChar}
+													/>
+												);
+											})}
+										</div>
+									);
+								})}
+							</div>
 						</div>
 
 						{focusState === 'idle' && (
@@ -1468,7 +1587,7 @@ function PasteModal({
 					autoFocus
 					value={value}
 					onChange={(e) => onChange(e.target.value)}
-					placeholder="Paste any text between 20 and 500 characters…"
+					placeholder="Paste any text — at least 20 characters, no upper limit…"
 					style={{
 						width: '100%',
 						minHeight: '8rem',
@@ -1496,12 +1615,12 @@ function PasteModal({
 					}}
 				>
 					<span>
-						{trimmedLen} / {CUSTOM_PASSAGE_MAX_CHARS}
+						{trimmedLen} chars
 						{tooShort && ` · need at least ${CUSTOM_PASSAGE_MIN_CHARS}`}
-						{tooLong && ' · too long'}
+						{tooLong && ` · over ${CUSTOM_PASSAGE_MAX_CHARS} limit`}
 					</span>
 					<span style={{ color: 'oklch(0.55 0 0)' }}>
-						single-use, not saved
+						saved while in progress
 					</span>
 				</div>
 				<div
