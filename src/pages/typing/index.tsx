@@ -82,6 +82,12 @@ const PASSAGE_LIBRARY: LibraryEntry[] = [
 	{ text: 'what we know is a drop, what we do not know is an ocean.', category: 'literary', source: 'isaac newton' },
 	{ text: 'to be yourself in a world that is constantly trying to make you something else is the greatest accomplishment.', category: 'literary', source: 'emerson' },
 
+	// Literary — paragraph length
+	{ text: 'it was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of light, it was the season of darkness.', category: 'literary', source: 'dickens' },
+	{ text: 'when you have eliminated the impossible, whatever remains, however improbable, must be the truth. this is the most fundamental principle of detection, and one i have applied in countless investigations across this strange and crowded city.', category: 'literary', source: 'arthur conan doyle' },
+	{ text: 'we are not makers of history. we are made by history. injustice anywhere is a threat to justice everywhere. we are caught in an inescapable network of mutuality, tied in a single garment of destiny. whatever affects one directly, affects all indirectly.', category: 'literary', source: 'martin luther king jr.' },
+	{ text: 'the woods are lovely, dark and deep, but i have promises to keep, and miles to go before i sleep, and miles to go before i sleep. the road less travelled by has made all the difference, though both that morning equally lay in leaves no step had trodden black.', category: 'literary', source: 'robert frost' },
+
 	// Tech
 	{ text: 'simplicity is the ultimate sophistication.', category: 'tech', source: 'leonardo da vinci' },
 	{ text: 'premature optimization is the root of all evil.', category: 'tech', source: 'donald knuth' },
@@ -92,6 +98,12 @@ const PASSAGE_LIBRARY: LibraryEntry[] = [
 	{ text: 'first, solve the problem. then, write the code.', category: 'tech', source: 'john johnson' },
 	{ text: 'code is read much more often than it is written.', category: 'tech', source: 'guido van rossum' },
 
+	// Tech — paragraph length
+	{ text: 'programs must be written for people to read, and only incidentally for machines to execute. a programmer can read a piece of code and understand its intent without first understanding every internal detail, because the abstraction holds and the names mean what they say.', category: 'tech', source: 'abelson and sussman' },
+	{ text: 'the function of good software is to make the complex appear to be simple. when an interface is designed well, the user can act on intuition; when it is designed poorly, the user has to study the manual just to fill in a form or send a message.', category: 'tech', source: 'grady booch' },
+	{ text: 'a good architecture is not a thing you can buy off the shelf, nor is it a property of any one team. it is the slow accumulation of correct decisions, each made in context, each open to revision later, each documented enough that the next engineer can find their footing.', category: 'tech' },
+	{ text: 'we build our computers the way we build our cities: over time, without a plan, on top of ruins. the layers accrue. the patterns that worked once become constraints later. progress arrives not as revolution but as careful, considered translation from what is to what could be.', category: 'tech', source: 'ellen ullman' },
+
 	// Code
 	{ text: 'const sum = arr.reduce((acc, x) => acc + x, 0);', category: 'code' },
 	{ text: 'function isEven(n) { return n % 2 === 0; }', category: 'code' },
@@ -101,6 +113,12 @@ const PASSAGE_LIBRARY: LibraryEntry[] = [
 	{ text: 'async function fetchData() { return await fetch(url); }', category: 'code' },
 	{ text: 'const [count, setCount] = useState(0);', category: 'code' },
 
+	// Code — paragraph length
+	{ text: 'function reducer(state, action) { switch (action.type) { case "increment": return { count: state.count + 1 }; case "decrement": return { count: state.count - 1 }; case "reset": return { count: 0 }; default: throw new Error("unknown action: " + action.type); } }', category: 'code' },
+	{ text: 'function binarySearch(arr, target) { let lo = 0, hi = arr.length - 1; while (lo <= hi) { const mid = Math.floor((lo + hi) / 2); if (arr[mid] === target) return mid; if (arr[mid] < target) lo = mid + 1; else hi = mid - 1; } return -1; }', category: 'code' },
+	{ text: 'async function loadUsers() { try { const response = await fetch("/api/users"); if (!response.ok) throw new Error("request failed"); const users = await response.json(); return users.filter((u) => u.active); } catch (error) { console.error("failed to load users:", error); return []; } }', category: 'code' },
+	{ text: 'const memoize = (fn) => { const cache = new Map(); return (...args) => { const key = JSON.stringify(args); if (cache.has(key)) return cache.get(key); const result = fn(...args); cache.set(key, result); return result; }; };', category: 'code' },
+
 	// Pangram
 	{ text: 'the quick brown fox jumps over the lazy dog.', category: 'pangram' },
 	{ text: 'pack my box with five dozen liquor jugs.', category: 'pangram' },
@@ -109,6 +127,11 @@ const PASSAGE_LIBRARY: LibraryEntry[] = [
 	{ text: 'five quacking zephyrs jolt my wax bed.', category: 'pangram' },
 	{ text: 'the five boxing wizards jump quickly.', category: 'pangram' },
 	{ text: 'bright vixens jump; dozy fowl quack.', category: 'pangram' },
+
+	// Pangram — paragraph length (every entry contains all 26 letters)
+	{ text: 'the quick brown fox jumps over the lazy dog. waltz, bad nymph, for quick jigs vex. how quickly daft jumping zebras vex. amazingly few discotheques provide jukeboxes. sphinx of black quartz, judge my vow.', category: 'pangram' },
+	{ text: 'jaded zombies acted quaintly but kept driving their oxen forward. the explorer was frozen in his big kayak just after making queer discoveries. five or six big jet planes zoomed quickly by the new tower in the town we visited.', category: 'pangram' },
+	{ text: 'a quick movement of the enemy will jeopardize six gunboats. pack my red box with five dozen quality jugs. crazy fredrick bought many very exquisite opal jewels. heavy boxes perform quick waltzes and jigs in the foggy night.', category: 'pangram' },
 ];
 
 const CUSTOM_PASSAGE_MIN_CHARS = 20;
