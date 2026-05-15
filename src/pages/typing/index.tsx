@@ -895,7 +895,6 @@ export default function TypingTrainer() {
 														key={i}
 														char={char}
 														state={state}
-														errorChar={errorChar}
 													/>
 												);
 											})}
@@ -1395,14 +1394,11 @@ function KeysetDisplay({
 function Char({
 	char,
 	state,
-	errorChar,
 }: {
 	char: string;
 	state: 'typed' | 'typed-wrong' | 'current' | 'error' | 'pending';
-	errorChar: string | null;
 }) {
 	if (state === 'error') {
-		const display = errorChar === ' ' ? '␣' : (errorChar ?? char);
 		return (
 			<span
 				style={{
@@ -1412,7 +1408,7 @@ function Char({
 					padding: '0 0.1rem',
 				}}
 			>
-				{display}
+				{char}
 			</span>
 		);
 	}
