@@ -380,6 +380,11 @@ export default function TypingTrainer() {
 	const unlockClearRef = useRef<number | null>(null);
 	const lastCorrectAtRef = useRef<number | null>(null);
 	const errorOnCurrentRef = useRef<boolean>(false);
+	// Authoritative cursor for the keydown handler. Keystrokes can arrive
+	// before React re-renders / re-attaches the listener, so the handler must
+	// not trust the `currentIndex` it closed over (a fast second keystroke
+	// would be judged against the previous character and flagged as an error).
+	const currentIndexRef = useRef(0);
 	const accumulatedMsRef = useRef(0);
 	const stintStartRef = useRef<number | null>(null);
 	const focusedSinceRef = useRef<number | null>(null);
@@ -564,7 +569,9 @@ export default function TypingTrainer() {
 					PRESSED_FLASH_MS,
 				);
 
-				const target = lessonText[currentIndex];
+				const idx = currentIndexRef.current;
+				if (idx >= lessonText.length) return;
+				const target = lessonText[idx];
 				if (e.key === target) {
 					const now = Date.now();
 					const isTrackable = /^[a-z]$/.test(target);
@@ -581,11 +588,12 @@ export default function TypingTrainer() {
 					lastCorrectAtRef.current = now;
 					errorOnCurrentRef.current = false;
 
-					setCurrentIndex((i) => i + 1);
+					currentIndexRef.current = idx + 1;
+					setCurrentIndex(idx + 1);
 					setCorrectCount((c) => c + 1);
 					setTotalCount((t) => t + 1);
 					setErrorChar(null);
-					if (currentIndex + 1 >= lessonText.length) {
+					if (idx + 1 >= lessonText.length) {
 						setCompleted(true);
 					}
 				} else {
@@ -599,9 +607,10 @@ export default function TypingTrainer() {
 			// === Passage mode: allow-through with Backspace ===
 			if (e.key === 'Backspace') {
 				e.preventDefault();
-				if (currentIndex > 0) {
+				if (currentIndexRef.current > 0) {
+					currentIndexRef.current -= 1;
 					setTypedChars((prev) => prev.slice(0, -1));
-					setCurrentIndex((i) => i - 1);
+					setCurrentIndex(currentIndexRef.current);
 				}
 				return;
 			}
@@ -620,7 +629,9 @@ export default function TypingTrainer() {
 				PRESSED_FLASH_MS,
 			);
 
-			const target = lessonText[currentIndex];
+			const idx = currentIndexRef.current;
+			if (idx >= lessonText.length) return;
+			const target = lessonText[idx];
 			const correct = e.key === target;
 			const now = Date.now();
 			const isTrackable = /^[a-z]$/.test(target);
@@ -633,12 +644,13 @@ export default function TypingTrainer() {
 			}
 			if (correct) lastCorrectAtRef.current = now;
 
+			currentIndexRef.current = idx + 1;
 			setTypedChars((prev) => [...prev, e.key]);
-			setCurrentIndex((i) => i + 1);
+			setCurrentIndex(idx + 1);
 			if (correct) setCorrectCount((c) => c + 1);
 			setTotalCount((t) => t + 1);
 
-			if (currentIndex + 1 >= lessonText.length) {
+			if (idx + 1 >= lessonText.length) {
 				setCompleted(true);
 			}
 		};
@@ -646,7 +658,6 @@ export default function TypingTrainer() {
 		return () => window.removeEventListener('keydown', onKey);
 	}, [
 		focusState,
-		currentIndex,
 		hasTyped,
 		completed,
 		lessonText,
@@ -678,6 +689,7 @@ export default function TypingTrainer() {
 				generateLessonText(mode, nextKeyset, passageCategory, null),
 			);
 			setCustomPassage(null);
+			currentIndexRef.current = 0;
 			setCurrentIndex(0);
 			setTypedChars([]);
 			setCorrectCount(0);
@@ -721,6 +733,7 @@ export default function TypingTrainer() {
 		errorOnCurrentRef.current = false;
 		setMode(nextMode);
 		setLessonText(nextText);
+		currentIndexRef.current = 0;
 		setCurrentIndex(0);
 		setTypedChars([]);
 		setCorrectCount(0);
@@ -1405,7 +1418,6 @@ function Char({
 					color: 'oklch(0.70 0.20 25)',
 					backgroundColor: 'oklch(0.40 0.18 25 / 0.35)',
 					borderRadius: '0.2rem',
-					padding: '0 0.1rem',
 				}}
 			>
 				{char}
@@ -1419,7 +1431,6 @@ function Char({
 					color: 'oklch(0.20 0.02 245)',
 					backgroundColor: 'oklch(0.93 0 0)',
 					borderRadius: '0.2rem',
-					padding: '0 0.1rem',
 				}}
 			>
 				{char}
