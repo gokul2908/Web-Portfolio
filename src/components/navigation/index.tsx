@@ -14,6 +14,7 @@ import WorkIcon from '@mui/icons-material/Work';
 import DescriptionIcon from '@mui/icons-material/Description';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import KeyboardIcon from '@mui/icons-material/Keyboard';
+import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import ResumeModal from '../resumeModal';
 
 function ResponsiveAppBar({ logo, navigation, contactNo, resumeLink, email, linkedin }: Props) {
@@ -49,6 +50,9 @@ function ResponsiveAppBar({ logo, navigation, contactNo, resumeLink, email, link
 				e.preventDefault();
 				navigate('/typing');
 			};
+		} else if (text === 'Games') {
+			// plain link: the games are static pages in public/games, outside the React router
+			href = '/games/index.html';
 		} else if (text === 'Contact') {
 			onClick = () =>
 				(window.location.href = `mailto:${email}?subject=problem-to-solve&body=Define%20your%20awesome%20problem%20here`);
@@ -61,6 +65,7 @@ function ResponsiveAppBar({ logo, navigation, contactNo, resumeLink, email, link
 		if (text === 'Home') Icon = HomeIcon;
 		if (text === 'Project') Icon = WorkIcon;
 		if (text === 'Typing') Icon = KeyboardIcon;
+		if (text === 'Games') Icon = SportsEsportsIcon;
 		if (text === 'Resume') Icon = DescriptionIcon;
 		if (text === 'Contact') Icon = MailIcon;
 		if (text === 'LinkedIn') Icon = LinkedInIcon;
@@ -165,6 +170,8 @@ function ResponsiveAppBar({ logo, navigation, contactNo, resumeLink, email, link
 									handleCloseNavMenu();
 									navigate('/typing');
 								};
+							} else if (page === 'Games') {
+								href = '/games/index.html';
 							} else if (page === 'Contact') {
 								onClick = () => {
 									handleCloseNavMenu();

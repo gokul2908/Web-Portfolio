@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Orb Rush</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #8fd0ff; color: #17324a;
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif; user-select: none; -webkit-user-select: none; }
+  canvas { display: block; touch-action: none; }
+  #hud { position: fixed; top: 10px; left: 12px; right: 12px; pointer-events: none; font-weight: 800; }
+  #row { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+  .chip { background: rgba(255,255,255,.82); border-radius: 14px; padding: 6px 12px; font-size: 15px; box-shadow: 0 3px 0 rgba(23,50,74,.18); white-space: nowrap; }
+  .chip small { opacity: .6; font-size: 11px; margin-right: 4px; }
+  #hearts { color: #e5484d; }
+  #bar { height: 22px; border-radius: 12px; background: rgba(23,50,74,.28); overflow: hidden; position: relative; border: 3px solid #fff; box-shadow: 0 3px 0 rgba(23,50,74,.18); }
+  #fill { height: 100%; width: 100%; background: linear-gradient(90deg, #e5484d, #ff9a5a); transition: width .12s; }
+  #barText { position: absolute; inset: 0; text-align: center; line-height: 22px; font-size: 13px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.5); }
+  #mega { position: fixed; bottom: 18px; right: 16px; width: 200px; height: 54px; border: 4px solid #fff; border-radius: 30px;
+    background: rgba(23,50,74,.45); overflow: hidden; cursor: pointer; padding: 0; box-shadow: 0 5px 0 rgba(23,50,74,.25); font: inherit; display: none; }
+  #megaFill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: linear-gradient(90deg, #ffb703, #ffd966); }
+  #megaText { position: relative; font-size: 17px; font-weight: 900; color: #fff; text-shadow: 0 2px 3px rgba(0,0,0,.45); letter-spacing: 1px; }
+  #mega.ready { animation: pulse .7s infinite alternate; }
+  @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.08); } }
+  #hit { position: fixed; inset: 0; pointer-events: none; box-shadow: inset 0 0 120px 40px rgba(229,72,77,.85); opacity: 0; transition: opacity .35s; }
+  #banner { position: fixed; top: 30%; left: 0; right: 0; text-align: center; font-size: clamp(38px, 9vw, 76px); font-weight: 900;
+    color: #fff; text-shadow: 0 4px 0 #17324a, 0 0 18px rgba(23,50,74,.7); pointer-events: none; opacity: 0; transform: scale(.7); transition: opacity .25s, transform .25s; }
+  #banner.on { opacity: 1; transform: scale(1); }
+  .overlay { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: rgba(23,50,74,.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); text-align: center; padding: 16px; color: #fff; }
+  .hidden { display: none !important; }
+  h1 { font-size: clamp(46px, 11vw, 92px); margin: 0 0 4px; color: #2ee6c8; text-shadow: 0 5px 0 #0e8f80, 0 12px 24px rgba(0,0,0,.35); letter-spacing: 2px; }
+  h2 { font-size: 30px; margin: 0 0 16px; }
+  #msg { font-size: 19px; margin: 8px 0 14px; min-height: 24px; font-weight: 700; }
+  .how { line-height: 1.75; font-size: 15px; max-width: 460px; opacity: .95; }
+  .how b { color: #ffd966; }
+  .big { margin-top: 20px; font-size: 22px; font-weight: 900; padding: 14px 46px; color: #fff; background: #e5484d; border: 0; border-radius: 40px; cursor: pointer; box-shadow: 0 6px 0 #a82c31; font-family: inherit; }
+  .big:active { transform: translateY(4px); box-shadow: 0 2px 0 #a82c31; }
+  #cards { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+  .card { width: 170px; padding: 16px 12px; border-radius: 18px; border: 0; cursor: pointer; background: #fff; color: #17324a; font-family: inherit; box-shadow: 0 6px 0 rgba(0,0,0,.25); }
+  .card:hover { transform: translateY(-4px); }
+  .card .ico { font-size: 38px; }
+  .card .t { font-weight: 900; font-size: 17px; margin: 6px 0 4px; }
+  .card .d { font-size: 13px; opacity: .75; line-height: 1.4; }
+  /* short screens (a phone held sideways): shrink the menu so the button stays on screen */
+  @media (max-height: 480px) {
+    h1 { font-size: clamp(26px, 9vh, 44px); margin: 0; }
+    p { margin: 2px 0; font-size: 12px; line-height: 1.35; }
+    #startBtn { margin-top: 8px; padding: 8px 26px; font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+<div id="hud">
+  <div id="row">
+    <span class="chip"><small>LEVEL</small><span id="level">1</span></span>
+    <span class="chip"><small>SCORE</small><span id="score">0</span></span>
+    <span class="chip" id="hearts">♥ <span id="base">15</span></span>
+    <span class="chip"><small>BEST</small><span id="best">0</span></span>
+  </div>
+  <div id="bar"><div id="fill"></div><div id="barText"></div></div>
+</div>
+<button id="mega"><div id="megaFill"></div><span id="megaText">MEGA ORB</span></button>
+<div id="hit"></div>
+<div id="banner"></div>
+
+<div id="overlay" class="overlay">
+  <h1>ORB RUSH</h1>
+  <div id="msg">Flood the red castle with orbs before its cubes reach your base.</div>
+  <div class="how">
+    The cannon fires on its own. <b>Move the mouse</b>, press <b>A / D</b>, or drag on a phone to aim.<br>
+    <b>Green gates</b> multiply your orbs, and <b>level up</b> the more you feed them.<br>
+    <b>Red walls</b> eat orbs. One orb cancels one cube; big cubes take many.<br>
+    Fill the meter, then press <b>Space</b> or tap the button for a <b>Mega Orb</b>.<br>
+    <b>P</b> pause · <b>M</b> mute
+  </div>
+  <button id="startBtn" class="big">PLAY</button>
+</div>
+
+<div id="shop" class="overlay hidden">
+  <h2>Castle down! Pick an upgrade</h2>
+  <div id="cards">
+    <button class="card" data-i="0"><div class="ico">⚡</div><div class="t">Rapid Fire</div><div class="d">Cannon fires 25% faster</div></button>
+    <button class="card" data-i="1"><div class="ico">❤️</div><div class="t">Repair Crew</div><div class="d">+6 hearts now, +3 max hearts</div></button>
+    <button class="card" data-i="2"><div class="ico">🌟</div><div class="t">Mega Battery</div><div class="d">Mega Orb charges 40% faster and hits 30% harder</div></button>
+  </div>
+  <div class="how" style="margin-top:14px">or press <b>1</b>, <b>2</b>, <b>3</b></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function () {
+  'use strict';
+  var HALF = 6, TOWER_Z = -55, MAX_ORBS = 900, MAX_FOES = 200, MAX_P = 500;
+  var $ = function (id) { return document.getElementById(id); };
+  function rnd(a, b) { return a + Math.random() * (b - a); }
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+  // =============== scene ===============
+  var scene = new THREE.Scene();
+  (function () {                                   // soft gradient sky
+    var c = document.createElement('canvas'); c.width = 8; c.height = 256;
+    var g = c.getContext('2d'), gr = g.createLinearGradient(0, 0, 0, 256);
+    gr.addColorStop(0, '#2f86f0'); gr.addColorStop(0.55, '#7cc4f8'); gr.addColorStop(1, '#cfeeff');
+    g.fillStyle = gr; g.fillRect(0, 0, 8, 256);
+    scene.background = new THREE.CanvasTexture(c);
+  })();
+  scene.fog = new THREE.Fog(0xcdeeff, 75, 190);
+
+  var camera = new THREE.PerspectiveCamera(56, innerWidth / innerHeight, 0.1, 400);
+  var renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  document.body.appendChild(renderer.domElement);
+  var camBase = new THREE.Vector3(), camLook = new THREE.Vector3();
+  function placeCamera() {
+    var tall = innerHeight > innerWidth;            // pull back on phones so the whole lane fits
+    camBase.set(0, tall ? 27 : 17.5, tall ? 21 : 15.5);
+    camLook.set(0, 0, tall ? -22 : -20);
+  }
+  placeCamera();
+
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x6f9fc0, 0.62));
+  var sun = new THREE.DirectionalLight(0xfff1d6, 0.8);
+  sun.position.set(-14, 26, -8); sun.target.position.set(0, 0, -26); scene.add(sun.target);
+  sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+  sun.shadow.camera.left = -16; sun.shadow.camera.right = 16; sun.shadow.camera.top = 40; sun.shadow.camera.bottom = -40;
+  sun.shadow.camera.near = 1; sun.shadow.camera.far = 80; sun.shadow.bias = -0.0008;
+  scene.add(sun);
+
+  function std(color, rough) { return new THREE.MeshStandardMaterial({ color: color, roughness: rough === undefined ? 0.7 : rough }); }
+  function add(geo, mat, x, y, z, parent, shadow) {
+    var m = new THREE.Mesh(geo, mat); m.position.set(x, y, z);
+    if (shadow !== false) { m.castShadow = true; m.receiveShadow = true; }
+    (parent || scene).add(m); return m;
+  }
+
+  // water, lane, cliff
+  var water = add(new THREE.PlaneGeometry(700, 700), std(0x2fa8e6, 0.25), 0, -3, -60, null, false);
+  water.rotation.x = -Math.PI / 2;
+  (function () {
+    var c = document.createElement('canvas'); c.width = c.height = 128;
+    var g = c.getContext('2d');
+    g.fillStyle = '#f3e3bd'; g.fillRect(0, 0, 128, 128);
+    g.fillStyle = '#e6d09c'; g.fillRect(0, 0, 128, 64);
+    g.fillStyle = 'rgba(23,50,74,.07)'; g.fillRect(62, 0, 4, 128);
+    var t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(1, 11);
+    var lane = add(new THREE.BoxGeometry(HALF * 2 + 1.6, 1, 68), new THREE.MeshStandardMaterial({ map: t, roughness: 0.95 }), 0, -0.5, -25);
+    lane.castShadow = false;
+    add(new THREE.BoxGeometry(HALF * 2 + 4, 5, 70), std(0xb58a5c, 1), 0, -3.4, -25, null, false);
+    add(new THREE.BoxGeometry(HALF * 2 + 4.6, 0.5, 70.6), std(0x62c370, 1), 0, -1.05, -25, null, false);
+    [-1, 1].forEach(function (s) { add(new THREE.BoxGeometry(0.6, 0.7, 68), std(0x24465f, 0.5), s * (HALF + 0.9), 0.15, -25); });
+  })();
+
+  // little islands with trees, and drifting clouds
+  var clouds = [];
+  (function () {
+    var grass = std(0x62c370, 1), rock = std(0xb58a5c, 1), leaf = std(0x2f9e5c, 0.9), trunk = std(0x7a5236, 1);
+    for (var i = 0; i < 12; i++) {
+      var s = i % 2 ? 1 : -1, r = rnd(2.5, 5), x = s * rnd(15, 34), z = rnd(-78, 4);
+      add(new THREE.CylinderGeometry(r, r * 0.6, 3.5, 9), rock, x, -2.2, z, null, false);
+      add(new THREE.CylinderGeometry(r * 1.05, r * 1.05, 0.5, 9), grass, x, -0.3, z, null, false);
+      for (var k = 0, n = 1 + Math.floor(rnd(0, 3)); k < n; k++) {
+        var tx = x + rnd(-r, r) * 0.5, tz = z + rnd(-r, r) * 0.5, h = rnd(1.6, 3);
+        add(new THREE.CylinderGeometry(0.18, 0.24, 1, 6), trunk, tx, 0.4, tz, null, false);
+        add(new THREE.ConeGeometry(h * 0.42, h, 7), leaf, tx, 0.9 + h / 2, tz, null, false);
+      }
+    }
+    var white = new THREE.MeshBasicMaterial({ color: 0xffffff, fog: false });
+    for (var j = 0; j < 9; j++) {
+      var g = new THREE.Group();
+      for (var q = 0; q < 4; q++) {
+        var p = new THREE.Mesh(new THREE.SphereGeometry(rnd(1.6, 2.8), 9, 7), white);
+        p.position.set(q * 2.2 - 3.3, rnd(-0.3, 0.5), rnd(-0.6, 0.6)); p.scale.y = 0.6; g.add(p);
+      }
+      g.position.set(rnd(-70, 70), rnd(9, 20), rnd(-120, -45)); scene.add(g); clouds.push(g);
+    }
+  })();
+
+  // your cannon, on a little fort
+  var launcher = new THREE.Group(), barrelPivot = new THREE.Group();
+  (function () {
+    var navy = std(0x24465f, 0.5), teal = std(0x18c7ae, 0.35);
+    add(new THREE.CylinderGeometry(1.15, 1.35, 0.7, 20), navy, 0, 0.35, 0, launcher);
+    [-1, 1].forEach(function (s) {
+      var w = add(new THREE.CylinderGeometry(0.55, 0.55, 0.3, 14), std(0x17324a, 0.6), s * 1.3, 0.55, 0.2, launcher); w.rotation.z = Math.PI / 2;
+    });
+    var b = add(new THREE.CylinderGeometry(0.5, 0.62, 2.2, 16), teal, 0, 0, -0.8, barrelPivot); b.rotation.x = -Math.PI / 2.35;
+    var ring = add(new THREE.CylinderGeometry(0.58, 0.58, 0.3, 16), navy, 0, 0.42, -1.75, barrelPivot); ring.rotation.x = -Math.PI / 2.35;
+    barrelPivot.position.y = 0.95; launcher.add(barrelPivot);
+    launcher.position.z = 3; scene.add(launcher);
+    var fort = std(0x18c7ae, 0.6);
+    add(new THREE.BoxGeometry(HALF * 2 + 1.6, 1.4, 1.2), fort, 0, 0.7, 6.2);
+    for (var i = -3; i <= 3; i++) add(new THREE.BoxGeometry(1, 0.7, 1.2), fort, i * 2, 1.75, 6.2);
+  })();
+
+  // enemy castle
+  var tower = new THREE.Group(), flag;
+  var tMat = new THREE.MeshStandardMaterial({ color: 0xe5484d, roughness: 0.65, emissive: 0xffffff, emissiveIntensity: 0 });
+  (function () {
+    var dark = std(0x8f2328, 0.7);
+    add(new THREE.BoxGeometry(9, 4, 5), tMat, 0, 2, 0, tower);
+    add(new THREE.BoxGeometry(6.4, 3.5, 4), tMat, 0, 5.75, 0, tower);
+    add(new THREE.BoxGeometry(4, 3, 3), tMat, 0, 9, 0, tower);
+    [-3.9, -1.3, 1.3, 3.9].forEach(function (x) { add(new THREE.BoxGeometry(1.1, 1, 1.1), dark, x, 4.5, 2, tower); });
+    [-1.5, 1.5].forEach(function (x) { add(new THREE.BoxGeometry(0.9, 0.9, 0.9), dark, x, 10.9, 1.1, tower); });
+    add(new THREE.BoxGeometry(2.8, 2.6, 0.3), std(0x3a0d10, 1), 0, 1.3, 2.45, tower);
+    add(new THREE.CylinderGeometry(0.08, 0.08, 3.4, 6), std(0x17324a), 0, 12.2, 0, tower);
+    flag = add(new THREE.PlaneGeometry(1.8, 1), new THREE.MeshStandardMaterial({ color: 0x17324a, side: THREE.DoubleSide }), 0.95, 13.3, 0, tower);
+    tower.position.z = TOWER_Z - 3; scene.add(tower);
+  })();
+
+  // crowds: one draw call each
+  var white = new THREE.Color(1, 1, 1), tmpC = new THREE.Color();
+  function tintable(geo) {                       // r128 only shows per-instance colours when the geometry has vertex colours
+    var n = geo.attributes.position.count, a = new Float32Array(n * 3); a.fill(1);
+    geo.setAttribute('color', new THREE.BufferAttribute(a, 3)); return geo;
+  }
+  var orbMesh = new THREE.InstancedMesh(new THREE.SphereGeometry(0.4, 12, 10),
+    new THREE.MeshStandardMaterial({ color: 0x1fd6ba, roughness: 0.3, emissive: 0x0a5a4e, emissiveIntensity: 0.5 }), MAX_ORBS);
+  var foeMesh = new THREE.InstancedMesh(tintable(new THREE.BoxGeometry(1, 1, 1)), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5, vertexColors: true }), MAX_FOES);
+  var visorMesh = new THREE.InstancedMesh(new THREE.BoxGeometry(0.66, 0.2, 0.1), new THREE.MeshBasicMaterial({ color: 0x1a0507 }), MAX_FOES);
+  var partMesh = new THREE.InstancedMesh(tintable(new THREE.BoxGeometry(0.24, 0.24, 0.24)), new THREE.MeshBasicMaterial({ color: 0xffffff, vertexColors: true }), MAX_P);
+  // colour buffers are sized from .count when first written, so fill them BEFORE dropping count to 0
+  for (var ci = 0; ci < MAX_FOES; ci++) foeMesh.setColorAt(ci, white);
+  for (ci = 0; ci < MAX_P; ci++) partMesh.setColorAt(ci, white);
+  [orbMesh, foeMesh, visorMesh, partMesh].forEach(function (m) { m.frustumCulled = false; m.count = 0; scene.add(m); });
+  orbMesh.castShadow = foeMesh.castShadow = true;
+  var megaMesh = add(new THREE.SphereGeometry(1.3, 20, 14),
+    new THREE.MeshStandardMaterial({ color: 0xffc21a, roughness: 0.25, emissive: 0xff8a00, emissiveIntensity: 0.6 }), 0, 1.3, 0);
+  megaMesh.visible = false;
+  var dummy = new THREE.Object3D();
+
+  // =============== sound ===============
+  var actx = null, muted = false, lastPop = 0;
+  function tone(freq, dur, type, vol, slideTo) {
+    if (!actx || muted) return;
+    try {
+      var o = actx.createOscillator(), g = actx.createGain(), t = actx.currentTime;
+      o.type = type || 'sine'; o.frequency.setValueAtTime(freq, t);
+      if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t + dur);
+      g.gain.setValueAtTime(vol || 0.06, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + dur);
+    } catch (e) {}
+  }
+  function pop() { var n = performance.now(); if (n - lastPop > 70) { lastPop = n; tone(rnd(500, 760), 0.07, 'triangle', 0.035); } }
+
+  // =============== state ===============
+  var orbs = [], foes = [], gates = [], parts = [], mega = null;
+  var best = 0;
+  try { best = parseInt(localStorage.getItem('orbRushBestScore') || '0', 10) || 0; } catch (e) {}
+  $('best').textContent = best;
+  var S = { mode: 'menu', level: 1, score: 0, towerHp: 0, towerMax: 1, baseHp: 15, baseMax: 15, t: 0, fireT: 0, spawnT: 0, spawned: 0,
+            aimX: 0, wait: 0, spawnEvery: 0.5, foeSpeed: 4, charge: 0, rateMul: 1, chargeMul: 1, megaMul: 1,
+            flash: 0, shake: 0, recoil: 0, hitT: 0 };
+  var keys = {};
+
+  // gate = posts + top bar + a see-through panel showing its multiplier and how close it is to levelling up
+  function paintGate(g) {
+    var c = g.ctx, col = g.val ? '#19b36b' : '#e5383b';
+    c.clearRect(0, 0, 256, 128);
+    c.globalAlpha = 0.5; c.fillStyle = col; c.fillRect(0, 0, 256, 128); c.globalAlpha = 1;
+    c.fillStyle = '#fff'; c.textAlign = 'center'; c.textBaseline = 'middle';
+    c.font = 'bold 104px Arial, Helvetica, sans-serif';
+    c.fillText(g.val ? '×' + g.val : '✕', 128, g.val && g.val < g.max ? 56 : 66);
+    if (g.val && g.val < g.max) {
+      c.fillStyle = 'rgba(0,0,0,.3)'; c.fillRect(28, 106, 200, 12);
+      c.fillStyle = '#ffe066'; c.fillRect(28, 106, 200 * Math.min(1, g.fed / g.need), 12);
+    }
+    g.tex.needsUpdate = true; g.step = Math.floor(10 * g.fed / g.need);
+  }
+  function makeGate(spec, i) {
+    var cv = document.createElement('canvas'); cv.width = 256; cv.height = 128;
+    var tex = new THREE.CanvasTexture(cv);
+    var grp = new THREE.Group(), frame = std(spec.val ? 0x12915a : 0xb3262a, 0.4);
+    var panel = new THREE.Mesh(new THREE.PlaneGeometry(spec.w, 2.7),
+      new THREE.MeshBasicMaterial({ map: tex, transparent: true, side: THREE.DoubleSide, depthWrite: false }));
+    panel.position.y = 1.4; grp.add(panel);
+    [-1, 1].forEach(function (s) { add(new THREE.CylinderGeometry(0.16, 0.16, 3, 8), frame, s * spec.w / 2, 1.5, 0, grp); });
+    add(new THREE.BoxGeometry(spec.w + 0.6, 0.34, 0.34), frame, 0, 3, 0, grp);
+    grp.position.z = spec.z; scene.add(grp);
+    var g = { z: spec.z, w: spec.w, val: spec.val, max: spec.max || 0, fed: 0, need: 70 * (spec.val || 1), range: HALF - spec.w / 2,
+              speed: spec.speed, phase: i * 1.7, grp: grp, panel: panel, tex: tex, ctx: cv.getContext('2d'), bit: 1 << i, x: 0, pulse: 0, step: 0 };
+    paintGate(g); return g;
+  }
+  function clearGates() {
+    gates.forEach(function (g) {
+      scene.remove(g.grp); g.tex.dispose();
+      g.grp.traverse(function (m) { if (m.geometry) m.geometry.dispose(); });
+    });
+    gates.length = 0;
+  }
+  function buildLevel(n) {
+    clearGates(); orbs.length = 0; foes.length = 0; mega = null;
+    var w = Math.max(2.8, 4.8 - 0.25 * n);
+    var spec = [{ z: -11, val: 2, max: 4, w: w, speed: 0.85 + n * 0.07 },
+                { z: -31, val: 2, max: n >= 3 ? 4 : 3, w: w, speed: -(1.1 + n * 0.09) }];
+    if (n >= 2) spec.push({ z: -21, val: 0, w: 3 + Math.min(2, n * 0.3), speed: 1.5 });
+    if (n >= 4) spec.push({ z: -42, val: 0, w: 2.6, speed: -2.3 });
+    spec.forEach(function (s, i) { gates.push(makeGate(s, i)); });
+    S.level = n; S.towerMax = S.towerHp = 450 + 350 * (n - 1);
+    S.spawnEvery = Math.max(0.11, 0.38 - 0.035 * n); S.foeSpeed = 4 + 0.3 * n;
+    S.fireT = 0; S.spawnT = 1.2; S.spawned = 0;
+    tower.visible = true;
+  }
+  function start() {
+    if (!actx) { try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} }
+    S.baseMax = S.baseHp = 15; S.t = 0; S.score = 0; S.charge = 0; S.rateMul = S.chargeMul = S.megaMul = 1; parts.length = 0;
+    buildLevel(1);
+    S.mode = 'play'; $('overlay').classList.add('hidden'); $('shop').classList.add('hidden'); $('mega').style.display = 'block';
+    banner('LEVEL 1'); tone(440, 0.12, 'triangle'); setTimeout(function () { tone(660, 0.18, 'triangle'); }, 110);
+  }
+  function banner(text) {
+    var b = $('banner'); b.textContent = text; b.classList.add('on');
+    clearTimeout(banner.t); banner.t = setTimeout(function () { b.classList.remove('on'); }, 1200);
+  }
+  function gameOver() {
+    S.mode = 'over';
+    var isBest = S.score > best;
+    if (isBest) { best = S.score; try { localStorage.setItem('orbRushBestScore', String(best)); } catch (e) {} }
+    $('best').textContent = best;
+    $('msg').textContent = (isBest ? 'New best! ' : '') + 'Your base fell on level ' + S.level + ' · score ' + S.score;
+    $('startBtn').textContent = 'PLAY AGAIN'; $('overlay').classList.remove('hidden'); $('mega').style.display = 'none';
+    tone(220, 0.6, 'sawtooth', 0.08, 60);
+  }
+  function togglePause() {
+    if (S.mode === 'play') { S.mode = 'pause'; $('msg').textContent = 'Paused'; $('startBtn').textContent = 'RESUME'; $('overlay').classList.remove('hidden'); }
+    else if (S.mode === 'pause') { S.mode = 'play'; $('overlay').classList.add('hidden'); }
+  }
+  var UPGRADES = [
+    function () { S.rateMul *= 1.25; },
+    function () { S.baseMax += 3; S.baseHp = Math.min(S.baseMax, S.baseHp + 6); },
+    function () { S.chargeMul *= 1.4; S.megaMul *= 1.3; }
+  ];
+  function pick(i) {
+    if (S.mode !== 'shop' || !UPGRADES[i]) return;
+    UPGRADES[i](); $('shop').classList.add('hidden');
+    buildLevel(S.level + 1); S.mode = 'play'; banner('LEVEL ' + S.level); tone(520, 0.1, 'triangle');
+  }
+  function fireMega() {
+    if (S.mode !== 'play' || S.charge < 100 || mega) return;
+    S.charge = 0;
+    mega = { x: launcher.position.x, z: 0.5, power: Math.round((40 + 10 * S.level) * S.megaMul), g: 0, roll: 0 };
+    S.recoil = 1; tone(140, 0.45, 'sawtooth', 0.1, 420);
+  }
+  function puff(x, y, z, color, n, spd) {
+    for (var k = 0; k < n && parts.length < MAX_P; k++)
+      parts.push({ x: x, y: y, z: z, vx: rnd(-spd, spd), vy: rnd(spd * 0.5, spd * 1.5), vz: rnd(-spd, spd), life: rnd(0.35, 0.75), c: color });
+  }
+  function hitTower(dmg, fromMega) {
+    dmg = Math.min(dmg, S.towerHp); if (dmg <= 0) return;
+    S.towerHp -= dmg; S.score += dmg; S.flash = Math.min(0.7, S.flash + 0.12 * dmg);
+    if (!fromMega) S.charge = Math.min(100, S.charge + 0.22 * dmg * S.chargeMul);   // a Mega Orb does not recharge itself
+    if (Math.random() < 0.35 || dmg > 3) puff(rnd(-3, 3), rnd(1, 4), TOWER_Z, 0xe5484d, dmg > 3 ? 14 : 1, 4);
+  }
+  var FOE_COLOR = { grunt: 0xe5484d, runner: 0xff9a3c, brute: 0x9c1f2e };
+
+  // =============== one step of game time ===============
+  function tick(dt) {
+    if (S.mode === 'win') {
+      S.wait -= dt;
+      if (S.wait <= 0) { S.mode = 'shop'; $('shop').classList.remove('hidden'); }
+      return;
+    }
+    if (S.mode !== 'play') return;
+    S.t += dt;
+    var i, j, o, f, g, k;
+
+    if (keys.KeyA || keys.ArrowLeft) S.aimX -= 12 * dt;
+    if (keys.KeyD || keys.ArrowRight) S.aimX += 12 * dt;
+    S.aimX = clamp(S.aimX, -HALF, HALF);
+    launcher.position.x += (S.aimX - launcher.position.x) * Math.min(1, dt * 14);
+
+    for (i = 0; i < gates.length; i++) { g = gates[i]; g.x = Math.sin(S.t * g.speed + g.phase) * g.range; }
+
+    // fire
+    S.fireT -= dt;
+    while (S.fireT <= 0) {
+      if (orbs.length < MAX_ORBS) { orbs.push({ x: launcher.position.x + rnd(-0.2, 0.2), z: 1.2, g: 0, dead: false, p: rnd(0, 6.28), b: S.t }); S.recoil = Math.max(S.recoil, 0.5); }
+      S.fireT += 1 / (10 * S.rateMul);
+    }
+
+    // orbs: move, pass gates, hit the castle
+    var n0 = orbs.length;
+    for (i = 0; i < n0; i++) {
+      o = orbs[i];
+      var pz = o.z; o.z -= 15 * dt;
+      for (j = 0; j < gates.length; j++) {
+        g = gates[j];
+        if ((o.g & g.bit) || pz < g.z || o.z > g.z || Math.abs(o.x - g.x) > g.w / 2) continue;
+        o.g |= g.bit; g.pulse = 1;
+        if (!g.val) { o.dead = true; puff(o.x, 0.6, o.z, 0xe5383b, 2, 2.5); break; }
+        for (k = 1; k < g.val && orbs.length < MAX_ORBS; k++)
+          orbs.push({ x: clamp(o.x + rnd(-1, 1), -HALF, HALF), z: o.z - rnd(0, 0.9), g: o.g, dead: false, p: rnd(0, 6.28), b: S.t });
+        if (g.val < g.max) {                       // feed the gate; enough orbs and it levels up
+          g.fed++;
+          if (g.fed >= g.need) { g.val++; g.fed = 0; g.need = 70 * g.val; g.pulse = 2.5; paintGate(g); tone(660, 0.12, 'sine', 0.07); tone(990, 0.25, 'sine', 0.06); puff(g.x, 2.5, g.z, 0xffe066, 16, 4); }
+          else if (Math.floor(10 * g.fed / g.need) !== g.step) paintGate(g);
+        }
+      }
+      if (!o.dead && o.z < TOWER_Z) { o.dead = true; hitTower(1); }
+    }
+
+    // mega orb: ploughs through cubes, gates multiply its punch, walls halve it
+    if (mega) {
+      var mz = mega.z; mega.z -= 13 * dt; mega.roll -= 10 * dt;
+      for (j = 0; j < gates.length; j++) {
+        g = gates[j];
+        if ((mega.g & g.bit) || mz < g.z || mega.z > g.z || Math.abs(mega.x - g.x) > g.w / 2 + 0.6) continue;
+        mega.g |= g.bit; g.pulse = 2;
+        mega.power = g.val ? mega.power * g.val : Math.ceil(mega.power / 2);
+        tone(g.val ? 880 : 180, 0.15, g.val ? 'sine' : 'square', 0.06);
+      }
+      if (mega.z < TOWER_Z) { hitTower(mega.power, true); S.shake = 0.5; tone(90, 0.5, 'sawtooth', 0.12, 40); mega = null; }
+    }
+
+    // cubes: spawn, march, reach your base
+    S.spawnT -= dt;
+    if (S.spawnT <= 0 && foes.length < MAX_FOES) {
+      S.spawned++;
+      var type = S.spawned % 14 === 0 ? 'brute' : (S.level >= 2 && Math.random() < 0.22 ? 'runner' : 'grunt');
+      var hp = type === 'brute' ? 12 + 5 * S.level : 1;
+      foes.push({ x: rnd(-HALF + 0.8, HALF - 0.8), x0: 0, z: TOWER_Z + 1, hp: hp, max: hp, type: type, dead: false, p: rnd(0, 6.28) });
+      foes[foes.length - 1].x0 = foes[foes.length - 1].x;
+      S.spawnT = S.spawnEvery * rnd(0.7, 1.3);
+    }
+    for (i = 0; i < foes.length; i++) {
+      f = foes[i];
+      f.z += S.foeSpeed * (f.type === 'brute' ? 0.55 : f.type === 'runner' ? 1.7 : 1) * dt;
+      if (f.type === 'runner') f.x = clamp(f.x0 + Math.sin(S.t * 3 + f.p) * 2.2, -HALF + 0.5, HALF - 0.5);
+      if (f.z > 2.2) {
+        f.dead = true; S.baseHp -= f.type === 'brute' ? 3 : 1; S.shake = 0.45; S.hitT = 0.4;
+        puff(f.x, 1, 3, 0xffffff, 8, 4); tone(120, 0.3, 'sawtooth', 0.1, 60);
+      }
+    }
+
+    // collisions: one orb cancels one point of cube health
+    for (i = 0; i < foes.length; i++) {
+      f = foes[i]; if (f.dead) continue;
+      var r = f.type === 'brute' ? 1.3 : 0.8;
+      if (mega && Math.abs(mega.z - f.z) < r + 1 && Math.abs(mega.x - f.x) < r + 1) {
+        var d = Math.min(f.hp, mega.power); f.hp -= d; mega.power -= d;
+        if (mega.power <= 0) { puff(mega.x, 1.3, mega.z, 0xffc21a, 20, 5); mega = null; }
+      }
+      for (j = 0; j < orbs.length && f.hp > 0; j++) {
+        o = orbs[j];
+        if (o.dead || Math.abs(o.z - f.z) > r || Math.abs(o.x - f.x) > r) continue;
+        o.dead = true; f.hp--;
+        if (f.type === 'brute') puff(o.x, 1, o.z, 0x1fd6ba, 1, 2);
+      }
+      if (f.hp <= 0) {
+        f.dead = true; S.score += f.max; S.charge = Math.min(100, S.charge + (f.type === 'brute' ? 6 : 0.8) * S.chargeMul);
+        puff(f.x, 0.8, f.z, FOE_COLOR[f.type], f.type === 'brute' ? 18 : 5, f.type === 'brute' ? 5 : 3); pop();
+      }
+    }
+    orbs = orbs.filter(alive); foes = foes.filter(alive);
+
+    if (S.baseHp <= 0) { S.baseHp = 0; gameOver(); }
+    else if (S.towerHp <= 0) {
+      S.mode = 'win'; S.wait = 1.8; orbs.length = 0; mega = null;
+      foes.forEach(function (e) { puff(e.x, 0.8, e.z, FOE_COLOR[e.type], 4, 3); }); foes.length = 0;
+      for (k = 0; k < 6; k++) puff(rnd(-4, 4), rnd(1, 10), TOWER_Z - 1, k % 2 ? 0xe5484d : 0x8f2328, 16, 8);
+      S.shake = 0.7; banner('CASTLE DOWN!');
+      [523, 659, 784, 1047].forEach(function (fq, q) { setTimeout(function () { tone(fq, 0.2, 'triangle', 0.07); }, q * 110); });
+    }
+  }
+  function alive(a) { return !a.dead; }
+
+  // =============== draw ===============
+  var lastHud = '';
+  function draw(dt) {
+    var i, n, s, t = S.t, anim = performance.now() / 1000;
+
+    // orbs hop along; fresh ones pop in
+    n = Math.min(orbs.length, MAX_ORBS);
+    dummy.rotation.set(0, 0, 0);
+    for (i = 0; i < n; i++) {
+      var o = orbs[i], hop = Math.abs(Math.sin(t * 9 + o.p));
+      s = Math.min(1, 0.35 + (t - o.b) * 5);
+      dummy.position.set(o.x, 0.4 * s + hop * 0.5, o.z);
+      dummy.scale.set(s * (1.08 - hop * 0.08), s * (0.86 + hop * 0.18), s * (1.08 - hop * 0.08));
+      dummy.updateMatrix(); orbMesh.setMatrixAt(i, dummy.matrix);
+    }
+    orbMesh.count = n; orbMesh.instanceMatrix.needsUpdate = true;
+
+    // cubes waddle; each has a dark visor facing you
+    n = Math.min(foes.length, MAX_FOES);
+    for (i = 0; i < n; i++) {
+      var f = foes[i];
+      s = f.type === 'brute' ? 1.5 + 0.9 * f.hp / f.max : f.type === 'runner' ? 0.75 : 0.95;
+      var wob = Math.sin(t * (f.type === 'runner' ? 14 : 8) + f.p);
+      dummy.position.set(f.x, s / 2 + Math.abs(wob) * 0.18, f.z);
+      dummy.rotation.set(0, wob * 0.18, wob * 0.1); dummy.scale.set(s, s, s);
+      dummy.updateMatrix(); foeMesh.setMatrixAt(i, dummy.matrix); foeMesh.setColorAt(i, tmpC.setHex(FOE_COLOR[f.type]));
+      dummy.position.set(f.x, s * 0.68 + Math.abs(wob) * 0.18, f.z + s * 0.5); dummy.rotation.set(0, 0, 0);
+      dummy.updateMatrix(); visorMesh.setMatrixAt(i, dummy.matrix);
+    }
+    foeMesh.count = visorMesh.count = n;
+    foeMesh.instanceMatrix.needsUpdate = visorMesh.instanceMatrix.needsUpdate = true;
+    if (foeMesh.instanceColor) foeMesh.instanceColor.needsUpdate = true;
+
+    // particles
+    for (i = parts.length - 1; i >= 0; i--) {
+      var p = parts[i]; p.life -= dt;
+      if (p.life <= 0) { parts.splice(i, 1); continue; }
+      p.vy -= 16 * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.z += p.vz * dt;
+    }
+    n = Math.min(parts.length, MAX_P);
+    for (i = 0; i < n; i++) {
+      p = parts[i]; s = Math.min(1, p.life * 3);
+      dummy.position.set(p.x, Math.max(0.1, p.y), p.z); dummy.rotation.set(p.life * 9, p.life * 7, 0); dummy.scale.set(s, s, s);
+      dummy.updateMatrix(); partMesh.setMatrixAt(i, dummy.matrix); partMesh.setColorAt(i, tmpC.setHex(p.c));
+    }
+    partMesh.count = n; partMesh.instanceMatrix.needsUpdate = true;
+    if (partMesh.instanceColor) partMesh.instanceColor.needsUpdate = true;
+
+    // gates slide and bounce when used
+    for (i = 0; i < gates.length; i++) {
+      var g = gates[i]; g.grp.position.x = g.x;
+      g.pulse = Math.max(0, g.pulse - dt * 5);
+      var gs = 1 + Math.min(1, g.pulse) * 0.1; g.grp.scale.set(gs, gs, 1);
+    }
+
+    megaMesh.visible = !!mega;
+    if (mega) { megaMesh.position.set(mega.x, 1.3, mega.z); megaMesh.rotation.x = mega.roll; }
+
+    // castle: flashes and rattles when hit, sinks as it loses health
+    var frac = S.towerMax ? S.towerHp / S.towerMax : 1;
+    S.flash = Math.max(0, S.flash - dt * 2.5); tMat.emissiveIntensity = S.flash * 0.6;
+    tower.scale.y += ((S.towerHp > 0 ? 0.4 + 0.6 * frac : 0.02) - tower.scale.y) * Math.min(1, dt * 6);
+    tower.position.x = (Math.random() - 0.5) * S.flash * 0.35;
+    flag.rotation.y = Math.sin(anim * 4) * 0.35;
+
+    S.recoil = Math.max(0, S.recoil - dt * 9); barrelPivot.position.z = S.recoil * 0.3;
+    for (i = 0; i < clouds.length; i++) { clouds[i].position.x += dt * 0.7; if (clouds[i].position.x > 80) clouds[i].position.x = -80; }
+
+    S.shake = Math.max(0, S.shake - dt);
+    camera.position.set(camBase.x + launcher.position.x * 0.12 + (Math.random() - 0.5) * S.shake,
+                        camBase.y + (Math.random() - 0.5) * S.shake, camBase.z);
+    camera.lookAt(camLook.x + launcher.position.x * 0.05, camLook.y, camLook.z);
+
+    S.hitT = Math.max(0, S.hitT - dt); $('hit').style.opacity = S.hitT > 0 ? 1 : 0;
+    var ready = S.charge >= 100 && !mega;
+    var hud = S.level + '|' + S.score + '|' + S.baseHp + '|' + S.towerHp + '|' + Math.floor(S.charge) + '|' + ready;
+    if (hud !== lastHud) {
+      lastHud = hud;
+      $('level').textContent = S.level; $('score').textContent = S.score; $('base').textContent = S.baseHp;
+      $('fill').style.width = (frac * 100) + '%'; $('barText').textContent = 'CASTLE ' + S.towerHp + ' / ' + S.towerMax;
+      $('megaFill').style.width = Math.min(100, S.charge) + '%';
+      $('megaText').textContent = ready ? 'MEGA ORB! (Space)' : 'MEGA ORB ' + Math.floor(S.charge) + '%';
+      $('mega').classList.toggle('ready', ready);
+    }
+    renderer.render(scene, camera);
+  }
+
+  // =============== input ===============
+  function aimFromPointer(e) { S.aimX = clamp((e.clientX / innerWidth * 2 - 1) * (HALF + 2), -HALF, HALF); }
+  addEventListener('pointermove', aimFromPointer);
+  addEventListener('pointerdown', aimFromPointer);
+  addEventListener('keydown', function (e) {
+    keys[e.code] = true;
+    if (e.code === 'KeyP' || e.code === 'Escape') togglePause();
+    if (e.code === 'KeyM') muted = !muted;
+    if (e.code === 'Space') { e.preventDefault(); if (S.mode === 'play') fireMega(); }
+    if (S.mode === 'shop' && /^Digit[123]$/.test(e.code)) pick(+e.code.slice(5) - 1);
+    if ((e.code === 'Enter' || e.code === 'Space') && (S.mode === 'menu' || S.mode === 'over')) start();
+    else if (e.code === 'Enter' && S.mode === 'pause') togglePause();
+  });
+  addEventListener('keyup', function (e) { keys[e.code] = false; });
+  $('startBtn').addEventListener('click', function () { if (S.mode === 'pause') togglePause(); else start(); });
+  $('mega').addEventListener('click', fireMega);
+  Array.prototype.forEach.call(document.querySelectorAll('.card'), function (b) {
+    b.addEventListener('click', function () { pick(+b.getAttribute('data-i')); });
+  });
+  addEventListener('resize', function () {
+    camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth, innerHeight); placeCamera();
+  });
+  document.addEventListener('visibilitychange', function () { if (document.hidden && S.mode === 'play') togglePause(); });
+
+  buildLevel(1);
+  var last = performance.now();
+  (function frame(now) {
+    requestAnimationFrame(frame);
+    now = now || last;
+    var dt = Math.min(0.05, (now - last) / 1000); last = now;
+    tick(dt); draw(dt);
+  })();
+
+  // for testing
+  window.__game = { puff: puff, S: S, tick: tick, start: start, pick: pick, fireMega: fireMega, gates: gates,
+    counts: function () { return { orbs: orbs.length, foes: foes.length, parts: parts.length, mega: mega && mega.power }; } };
+})();
+</script>
+</body>
+</html>

@@ -31,6 +31,8 @@ Routing ([src/App.tsx](src/App.tsx), react-router `createBrowserRouter`):
 - `/typing` — Typing Trainer Playground
 - `/:name` — portfolio Homepage for that user
 
+Static games live outside the router in `public/games/` (`index.html` hub, `neon-drift.html`, `orb-rush.html`): single-file three.js pages (r128 from cdnjs) linked from the `Games` navigation item with a plain `<a>`.
+
 The portfolio content is data-driven: `src/user_details.ts` is an array of user records (intro text, navigation, showcases, resume link, etc.). `Homepage` looks up the record by the `:name` route param and spreads it into the components in `src/components/` (intro, projects, navigation, resumeModal, videobgeffectmodal). To change portfolio content, edit `user_details.ts`, not the components.
 
 `src/components/videobgeffectmodal/` is the selfie-cam recorder; it uses `@mediapipe/tasks-vision` for background effects and face crop.
